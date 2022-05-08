@@ -1,0 +1,11 @@
+<svg t="1635420575894" class="icon" viewBox="0 0 1056 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3469" xmlns:xlink="http://www.w3.org/1999/xlink" width="206.25" height="200">
+    <defs>
+        <style type="text/css"></style>
+    </defs>
+    <path d="M48 48h832v832h-832z" fill="#FFFFFF" p-id="3470"></path>
+    <path d="M864 64v800H64V64h800m32-32H32v864h864V32z" fill="#777677" p-id="3471"></path>
+    <path d="M656 608c-96 0-179.2-41.6-201.6-96H448c0-70.4-86.4-128-192-128s-192 57.6-192 128v352h800V512h-6.4c-22.4 54.4-105.6 96-201.6 96z" fill="#C8DAF4" p-id="3472"></path>
+    <path d="M672 256m-128 0a128 128 0 1 0 256 0 128 128 0 1 0-256 0Z" fill="#FBEAAE" p-id="3473"></path>
+    <path d="M576 480h128v544h-128zM704 480v320l352-160z" fill="#FFFFFF" p-id="3474"></path>
+    <path d="M608 512h64v480h-64zM704 512v256l288-128z" fill="#FF806C" p-id="3475"></path>
+</svg>
