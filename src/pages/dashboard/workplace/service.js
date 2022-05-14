@@ -281,37 +281,37 @@ const getActivities = [
 
 const radarOriginData = [
   {
-    name: '个人',
-    ref: 10,
-    koubei: 8,
-    output: 4,
-    contribute: 5,
-    hot: 7,
+    name: '浙江省',
+    new1: 10,
+    new2: 8,
+    new3: 4,
+    new4: 5,
+    new5: 7,
   },
   {
-    name: '团队',
-    ref: 3,
-    koubei: 9,
-    output: 6,
-    contribute: 3,
-    hot: 1,
+    name: '上海市',
+    new1: 23,
+    new2: 46,
+    new3: 96,
+    new4: 0,
+    new5: 1,
   },
   {
-    name: '部门',
-    ref: 4,
-    koubei: 1,
-    output: 6,
-    contribute: 5,
-    hot: 7,
+    name: '北京市',
+    new1: 4,
+    new2: 1,
+    new3: 6,
+    new4: 5,
+    new5: 7,
   },
 ];
 const radarData = [];
 const radarTitleMap = {
-  ref: '引用',
-  koubei: '口碑',
-  output: '产量',
-  contribute: '贡献',
-  hot: '热度',
+  new1: '新增感染',
+  new2: '新增无症状',
+  new3: '现存确诊',
+  new4: '新增治愈',
+  new5: '新增死亡',
 };
 radarOriginData.forEach((item) => {
   Object.keys(item).forEach((key) => {

@@ -33,7 +33,12 @@ export async function getInitialState() {
     return undefined;
   }; // 如果是登录页面，不执行
   if (nonLoginPath.indexOf(history.location.pathname) === -1) {
-    const currentUser = await fetchUserInfo();
+    // const currentUser = await fetchUserInfo();
+    const currentUser = {
+      name: '测试用户',
+      avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
+      id: 1,
+    };
     return {
       fetchUserInfo,
       currentUser,
