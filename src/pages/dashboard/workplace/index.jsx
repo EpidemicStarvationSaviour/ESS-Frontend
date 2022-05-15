@@ -70,6 +70,104 @@ const ExtraContent = (props) => (
     </div>
   </div>
 );
+//给用户的render
+const renderGroupList1 = (item) => (
+  <Card.Grid className={styles.projectGrid} key={item.id}>
+    <Card
+      bodyStyle={{
+        padding: 0,
+      }}
+      bordered={false}
+    >
+      <Card.Meta
+        title={
+          <div className={styles.cardTitle}>
+            <Avatar
+              size="small"
+              src={'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png'}
+            />
+            <Link to={'/project/detail/' + item.id}>{item.name}</Link>
+          </div>
+        }
+        description={item.description}
+      />
+      <div className={styles.projectItemContent}>
+        <Link to={'/project/detail/' + item.id}>{'图片总数' + item.images.length}</Link>
+        {item.createdTime && (
+          <span className={styles.datetime} title={item.createdTime}>
+            {moment(item.createdTime).fromNow()}
+          </span>
+        )}
+      </div>
+    </Card>
+  </Card.Grid>
+);
+
+//给商家的render
+const renderGroupList2 = (item) => (
+  <Card.Grid className={styles.projectGrid} key={item.id}>
+    <Card
+      bodyStyle={{
+        padding: 0,
+      }}
+      bordered={false}
+    >
+      <Card.Meta
+        title={
+          <div className={styles.cardTitle}>
+            <Avatar
+              size="small"
+              src={'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png'}
+            />
+            <Link to={'/project/detail/' + item.id}>{item.name}</Link>
+          </div>
+        }
+        description={item.description}
+      />
+      <div className={styles.projectItemContent}>
+        <Link to={'/project/detail/' + item.id}>{'图片总数' + item.images.length}</Link>
+        {item.createdTime && (
+          <span className={styles.datetime} title={item.createdTime}>
+            {moment(item.createdTime).fromNow()}
+          </span>
+        )}
+      </div>
+    </Card>
+  </Card.Grid>
+);
+
+//给骑手的render
+const renderGroupList3 = (item) => (
+  <Card.Grid className={styles.projectGrid} key={item.id}>
+    <Card
+      bodyStyle={{
+        padding: 0,
+      }}
+      bordered={false}
+    >
+      <Card.Meta
+        title={
+          <div className={styles.cardTitle}>
+            <Avatar
+              size="small"
+              src={'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png'}
+            />
+            <Link to={'/project/detail/' + item.id}>{item.name}</Link>
+          </div>
+        }
+        description={item.description}
+      />
+      <div className={styles.projectItemContent}>
+        <Link to={'/project/detail/' + item.id}>{'图片总数' + item.images.length}</Link>
+        {item.createdTime && (
+          <span className={styles.datetime} title={item.createdTime}>
+            {moment(item.createdTime).fromNow()}
+          </span>
+        )}
+      </div>
+    </Card>
+  </Card.Grid>
+);
 
 const Workplace = () => {
   const {
@@ -138,7 +236,7 @@ const Workplace = () => {
                 style={{
                   marginBottom: 24,
                 }}
-                title="进行中的项目"
+                title="进行中的团购"
                 bordered={false}
                 extra={<Link to="/project/list">全部项目</Link>}
                 loading={groupLoading}
@@ -146,41 +244,16 @@ const Workplace = () => {
                   padding: 0,
                 }}
               >
-                {groupList.proejcts.map((item) => (
-                  <Card.Grid className={styles.projectGrid} key={item.id}>
-                    <Card
-                      bodyStyle={{
-                        padding: 0,
-                      }}
-                      bordered={false}
-                    >
-                      <Card.Meta
-                        title={
-                          <div className={styles.cardTitle}>
-                            <Avatar
-                              size="small"
-                              src={
-                                'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png'
-                              }
-                            />
-                            <Link to={'/project/detail/' + item.id}>{item.name}</Link>
-                          </div>
-                        }
-                        description={item.description}
-                      />
-                      <div className={styles.projectItemContent}>
-                        <Link to={'/project/detail/' + item.id}>
-                          {'图片总数' + item.images.length}
-                        </Link>
-                        {item.createdTime && (
-                          <span className={styles.datetime} title={item.createdTime}>
-                            {moment(item.createdTime).fromNow()}
-                          </span>
-                        )}
-                      </div>
-                    </Card>
-                  </Card.Grid>
-                ))}
+                {groupList.data.map((item) => {
+                  switch (currentUser.user_role) {
+                    case 0:
+                      return renderGroupList2(item);
+                    case 1:
+                      return renderGroupList3(item);
+                    default:
+                      return renderGroupList1(item);
+                  }
+                })}
               </Card>
               <Card
                 bodyStyle={{
