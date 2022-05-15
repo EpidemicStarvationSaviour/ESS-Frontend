@@ -13,12 +13,15 @@ import {
   notification,
   Image,
   Typography,
+  Cascader,
+  Radio,
 } from 'antd';
 import { Link, useRequest, history, useModel } from 'umi';
 
 import { fakeRegister } from './service';
 import styles from './style.less';
 import ProForm, { LoginForm, ProFormInstance } from '@ant-design/pro-form';
+import { MapOptions } from '../../../utils/map';
 const { Title } = Typography;
 
 const FormItem = Form.Item;
@@ -76,7 +79,7 @@ const Register = () => {
   const [popover, setPopover] = useState(false);
   const confirmDirty = false;
   const { initialState, setInitialState } = useModel('@@initialState');
-
+  const [role, setRole] = useState(-1);
   let interval;
   const [form] = Form.useForm();
 
@@ -86,6 +89,7 @@ const Register = () => {
     },
     [interval],
   );
+
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
@@ -111,7 +115,7 @@ const Register = () => {
   };
 
   const getPasswordStatus = () => {
-    const value = form.getFieldValue('userSecret');
+    const value = form.getFieldValue('user_secret');
 
     if (value && value.length > 9) {
       return 'ok';
@@ -142,9 +146,6 @@ const Register = () => {
         await fetchUserInfo();
         history.push({
           pathname: '/user/register-result',
-          state: {
-            account: params.userEmail,
-          },
         });
       } else {
         notification.error({
@@ -166,13 +167,19 @@ const Register = () => {
   });
 
   const onFinish = (values) => {
+    values.user_address = {
+      province: values.address[0],
+      city: values.address[1],
+      area: values.address[2],
+      details: values.address_detail,
+    };
     register(values);
   };
 
   const checkConfirm = (_, value) => {
     const promise = Promise;
     console.log(value, form.getFieldsValue(true));
-    if (value && value !== form.getFieldValue('userSecret')) {
+    if (value && value !== form.getFieldValue('user_secret')) {
       return promise.reject('两次输入的密码不匹配!');
     }
 
@@ -214,7 +221,7 @@ const Register = () => {
   );
 
   const renderPasswordProgress = () => {
-    const value = form.getFieldValue('userSecret');
+    const value = form.getFieldValue('user_secret');
     const passwordStatus = getPasswordStatus();
     return value && value.length ? (
       <div className={styles[`progress-${passwordStatus}`]}>
@@ -238,8 +245,8 @@ const Register = () => {
           alignItems: 'center',
         }}
       >
-        <Image height={100} width={100} src="https://i.loli.net/2021/10/29/vnqkrDB5L2f1YtC.png" />
-        <Title> Annotation OL</Title>
+        <Image height={100} width={100} src="https://s2.loli.net/2022/05/15/f2a8D7eS6gt1xBh.png" />
+        <Title> EpidemicStarvationSaviour</Title>
       </div>
       <Form
         className={styles.main}
@@ -252,20 +259,20 @@ const Register = () => {
         scrollToFirstError
       >
         <Form.Item
-          name="userEmail"
-          label="邮箱"
+          name="user_name"
+          label="昵称"
           rules={[
             {
               required: true,
-              message: '请输入邮箱地址!',
+              message: '请输入昵称!',
             },
             {
-              type: 'email',
-              message: '邮箱地址格式错误!',
+              max: '30',
+              message: '昵称不能超过30个字符',
             },
           ]}
         >
-          <Input size="large" placeholder="邮箱" />
+          <Input size="large" placeholder="昵称" />
         </Form.Item>
         <Popover
           getPopupContainer={(node) => {
@@ -301,11 +308,11 @@ const Register = () => {
           visible={visible}
         >
           <Form.Item
-            name="userSecret"
+            name="user_secret"
             label="密码"
             className={
-              form.getFieldValue('userSecret') &&
-              form.getFieldValue('userSecret').length > 0 &&
+              form.getFieldValue('user_secret') &&
+              form.getFieldValue('user_secret').length > 0 &&
               styles.password
             }
             rules={[
@@ -336,16 +343,6 @@ const Register = () => {
         >
           <Input size="large" type="password" placeholder="确认密码" />
         </Form.Item>
-
-        <Form.Item
-          name="userName"
-          label="用户名"
-          tooltip="该用户名和邮箱同时为唯一标识符，请谨慎选择"
-          rules={[{ required: true, message: '请输入你的用户名', whitespace: true }]}
-        >
-          <Input />
-        </Form.Item>
-
         <Form.Item
           name="userPhone"
           label="手机号"
@@ -388,6 +385,50 @@ const Register = () => {
             </Col>
           </Row>
         </Form.Item>
+        <Form.Item
+          label="身份选择"
+          name="user_role"
+          rules={[{ required: true, message: '请选择你的身份' }]}
+        >
+          <Radio.Group onChange={(e) => setRole(e.target.value)}>
+            <Radio.Button value={0}>商家</Radio.Button>
+            <Radio.Button value={1}>骑手</Radio.Button>
+            <Radio.Button value={2}>用户</Radio.Button>
+          </Radio.Group>
+        </Form.Item>
+        {(role == 0 || role == 2) && (
+          <>
+            <Form.Item
+              name="address"
+              label="地址选择"
+              rules={[
+                {
+                  type: 'array',
+                  required: true,
+                  message: 'Please select your habitual residence!',
+                },
+              ]}
+            >
+              <Cascader options={MapOptions} />
+            </Form.Item>
+            <Form.Item
+              name="address_detail"
+              label="详细地址"
+              rules={[
+                {
+                  required: true,
+                  message: '请输入详细地址!',
+                },
+                {
+                  max: '60',
+                  message: '详细不能超过60个字符',
+                },
+              ]}
+            >
+              <Input placeholder="详细地址" />
+            </Form.Item>
+          </>
+        )}
 
         <Form.Item {...tailFormItemLayout}>
           <Button

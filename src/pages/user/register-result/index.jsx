@@ -16,14 +16,13 @@ const actions = (
 );
 
 const RegisterResult = ({ location }) => {
-  const email = location.state ? location.state.account : 'AntDesign@example.com';
   return (
     <Result
       className={styles.registerResult}
       status="success"
       title={
         <div className={styles.title}>
-          <span>你的账户：{email} 注册成功</span>
+          <span>你的账户注册成功</span>
         </div>
       }
       subTitle="激活邮件已发送到你的邮箱中，邮件有效期为24小时。请及时登录邮箱，点击邮件中的链接激活帐户。"

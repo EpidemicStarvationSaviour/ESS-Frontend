@@ -1,11 +1,2 @@
-<svg t="1635420575894" class="icon" viewBox="0 0 1056 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3469" xmlns:xlink="http://www.w3.org/1999/xlink" width="206.25" height="200">
-    <defs>
-        <style type="text/css"></style>
-    </defs>
-    <path d="M48 48h832v832h-832z" fill="#FFFFFF" p-id="3470"></path>
-    <path d="M864 64v800H64V64h800m32-32H32v864h864V32z" fill="#777677" p-id="3471"></path>
-    <path d="M656 608c-96 0-179.2-41.6-201.6-96H448c0-70.4-86.4-128-192-128s-192 57.6-192 128v352h800V512h-6.4c-22.4 54.4-105.6 96-201.6 96z" fill="#C8DAF4" p-id="3472"></path>
-    <path d="M672 256m-128 0a128 128 0 1 0 256 0 128 128 0 1 0-256 0Z" fill="#FBEAAE" p-id="3473"></path>
-    <path d="M576 480h128v544h-128zM704 480v320l352-160z" fill="#FFFFFF" p-id="3474"></path>
-    <path d="M608 512h64v480h-64zM704 512v256l288-128z" fill="#FF806C" p-id="3475"></path>
-</svg>
+<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1652591657096" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2506" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><defs><style type="text/css">@font-face { font-family: feedback-iconfont; src: url("//at.alicdn.com/t/font_1031158_u69w8yhxdu.woff2?t=1630033759944") format("woff2"), url("//at.alicdn.com/t/font_1031158_u69w8yhxdu.woff?t=1630033759944") format("woff"), url("//at.alicdn.com/t/font_1031158_u69w8yhxdu.ttf?t=1630033759944") format("truetype"); }
+</style></defs><path d="M512 512m-460.8 0a460.8 460.8 0 1 0 921.6 0 460.8 460.8 0 1 0-921.6 0Z" fill="#059490" p-id="2507"></path><path d="M732.6208 505.18528V819.2H298.16832V505.18528H209.92L512 204.8l302.08 300.38528h-81.4592zM293.15072 471.04h38.95808v314.01472h366.592V471.04h32.17408L512 254.29504z m300.30848 215.04h81.4592v81.92h-81.4592v-81.92z m-118.784 0h81.4592v81.92H474.66496v-81.92z m0-116.05504h81.4592v81.92H474.66496v-81.92zM355.87072 686.08h81.4592v81.92h-81.4592v-81.92z m0-116.05504h81.4592v81.92h-81.4592v-81.92z m0-116.04992h81.4592v81.92h-81.4592v-81.92z" fill="#ffffff" p-id="2508"></path></svg>

@@ -1,12 +1,12 @@
 const Settings = {
   contentWidth: 'Fluid',
   fixedHeader: false,
-  primaryColor: '#722ED1',
+  primaryColor: '#13C2C2',
   navTheme: 'light',
   layout: 'side',
   title: 'Annotation OL',
   splitMenus: false,
   fixSiderbar: true,
-  logo: 'https://i.loli.net/2021/10/29/vnqkrDB5L2f1YtC.png',
+  logo: 'https://s2.loli.net/2022/05/15/f2a8D7eS6gt1xBh.png',
 };
 export default Settings;

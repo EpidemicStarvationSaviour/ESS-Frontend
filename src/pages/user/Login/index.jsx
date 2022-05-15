@@ -28,7 +28,7 @@ const LoginMessage = ({ content }) => (
 
 const Login = () => {
   const [userLoginState, setUserLoginState] = useState({});
-  const [type, setType] = useState('account');
+  const [type, setType] = useState('phone');
   const { initialState, setInitialState } = useModel('@@initialState');
   const intl = useIntl();
 
@@ -77,8 +77,8 @@ const Login = () => {
       <div className={styles.content}>
         <LoginForm
           logo={<img alt="logo" src="/logo.svg" />}
-          title="Annotation OL"
-          subTitle="Annotation OL是32舍最好用的图片标注网站"
+          title="ESS"
+          subTitle="EpidemicStarvationSaviour是32舍最好用的物资分配系统"
           initialValues={{
             autoLogin: true,
           }}
@@ -105,26 +105,26 @@ const Login = () => {
           }}
         >
           <Tabs activeKey={type} onChange={setType}>
-            <Tabs.TabPane key="account" tab="用户名登录" />
-            <Tabs.TabPane key="email" tab="邮箱登录" />
+            <Tabs.TabPane key="phone" tab="手机号登录" />
+            <Tabs.TabPane key="name" tab="用户名登录" />
           </Tabs>
 
-          {status === 'error' && loginType === 'account' && (
-            <LoginMessage content={msg || '用户名或密码错误'} />
+          {status === 'error' && loginType === 'phone' && (
+            <LoginMessage content={msg || '手机号或密码错误'} />
           )}
-          {type === 'account' && (
+          {type === 'phone' && (
             <>
               <ProFormText
-                name="account"
+                name="phone"
                 fieldProps={{
                   size: 'large',
                   prefix: <UserOutlined className={styles.prefixIcon} />,
                 }}
-                placeholder="用户名"
+                placeholder="手机号"
                 rules={[
                   {
                     required: true,
-                    message: <FormattedMessage id="23" defaultMessage="请输入用户名!" />,
+                    message: <FormattedMessage id="23" defaultMessage="请输入手机号" />,
                   },
                 ]}
               />
@@ -145,18 +145,18 @@ const Login = () => {
             </>
           )}
 
-          {status === 'error' && loginType === 'email' && (
-            <LoginMessage content={msg || '邮箱或密码错误'} />
+          {status === 'error' && loginType === 'name' && (
+            <LoginMessage content={msg || '用户名或密码错误'} />
           )}
-          {type === 'email' && (
+          {type === 'name' && (
             <>
               <ProFormText
-                name="email"
+                name="name"
                 fieldProps={{
                   size: 'large',
                   prefix: <UserOutlined className={styles.prefixIcon} />,
                 }}
-                placeholder="邮箱"
+                placeholder="用户名"
                 rules={[
                   {
                     required: true,
