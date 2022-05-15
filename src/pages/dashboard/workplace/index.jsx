@@ -5,7 +5,7 @@ import { PageContainer } from '@ant-design/pro-layout';
 import moment from 'moment';
 import EditableLinkGroup from './components/EditableLinkGroup';
 import styles from './style.less';
-import { queryProjectNotice, queryActivities, fakeChartData } from './service';
+import { queryGroup, queryActivities, fakeChartData, queryWorkinfo } from './service';
 const links = [
   {
     title: '创建tag',
@@ -43,11 +43,11 @@ const PageHeaderContent = ({ currentUser }) => {
       <div className={styles.content}>
         <div className={styles.contentTitle}>
           早安，
-          {currentUser.userName}
+          {currentUser.user_name}
           ，祝你满绩每一天！
         </div>
         <div>
-          {currentUser.userEmail} |{currentUser.userPhone}
+          {currentUser.user_phone} |{'id:' + currentUser.user_id}
         </div>
       </div>
     </div>
@@ -57,20 +57,16 @@ const PageHeaderContent = ({ currentUser }) => {
 const ExtraContent = (props) => (
   <div className={styles.extraContent}>
     <div className={styles.statItem}>
-      <Statistic title="项目总数" value={props.data?.proejcts ? props.data.proejcts.length : 0} />
+      <Statistic title="用户总数" value={props.total_users || 0} />
     </div>
     <div className={styles.statItem}>
-      <Statistic
-        title="团队排名"
-        value={1}
-        suffix={`/  ${props.data?.totalUser ? props.data.totalUser : 0}`}
-      />
+      <Statistic title="开团数量" value={props.total_groups || 0} />
     </div>
     <div className={styles.statItem}>
-      <Statistic
-        title="参与项目"
-        value={props.data?.participateNum ? props.data.participateNum : 0}
-      />
+      <Statistic title="上架种类" value={props.total_commodities || 0} />
+    </div>
+    <div className={styles.statItem}>
+      <Statistic title="完成订单" value={props.finished_groups || 0} />
     </div>
   </div>
 );
@@ -83,10 +79,18 @@ const Workplace = () => {
     setInitialState,
   } = useModel('@@initialState');
 
-  const { loading: projectLoading, data: projectNotice = {} } = useRequest(queryProjectNotice);
+  const { loading: groupLoading, data: groupList = {} } = useRequest(() =>
+    queryGroup({
+      type: 1,
+      page_num: 1,
+      page_size: 10,
+    }),
+  );
+  const { loading: workinfoLoading, data: workinfoData } = useRequest(queryWorkinfo);
+
   const { loading: activitiesLoading, data: activities = [] } = queryActivities();
+
   const data = fakeChartData();
-  console.log(data);
   const renderActivities = (item) => {
     const events = item.template.split(/@\{([^{}]*)\}/gi).map((key) => {
       if (item[key]) {
@@ -122,10 +126,10 @@ const Workplace = () => {
 
   return (
     <>
-      {loading || projectLoading ? null : (
+      {loading || groupLoading || workinfoLoading ? null : (
         <PageContainer
           content={<PageHeaderContent currentUser={currentUser} />}
-          extraContent={<ExtraContent data={projectNotice} />}
+          extraContent={<ExtraContent data={workinfoData} />}
         >
           <Row gutter={24}>
             <Col xl={16} lg={24} md={24} sm={24} xs={24}>
@@ -137,12 +141,12 @@ const Workplace = () => {
                 title="进行中的项目"
                 bordered={false}
                 extra={<Link to="/project/list">全部项目</Link>}
-                loading={projectLoading}
+                loading={groupLoading}
                 bodyStyle={{
                   padding: 0,
                 }}
               >
-                {projectNotice.proejcts.map((item) => (
+                {groupList.proejcts.map((item) => (
                   <Card.Grid className={styles.projectGrid} key={item.id}>
                     <Card
                       bodyStyle={{

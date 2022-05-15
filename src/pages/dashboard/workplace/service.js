@@ -1,6 +1,15 @@
 import { request } from 'umi';
-export async function queryProjectNotice() {
-  return request('/api/info/workspace');
+export async function queryGroup(params) {
+  return request('/api/group/list', {
+    method: 'GET',
+    data: params,
+  });
+}
+
+export async function queryWorkinfo() {
+  return request('/api/user/workinfo', {
+    method: 'GET',
+  });
 }
 export function queryActivities() {
   return { loading: false, data: getActivities };
