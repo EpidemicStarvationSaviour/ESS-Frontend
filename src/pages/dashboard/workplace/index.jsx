@@ -261,7 +261,7 @@ const Workplace = () => {
                 }}
                 bordered={false}
                 className={styles.activeCard}
-                title="动态（静态数据）"
+                title="动态（静态数据)"
                 loading={activitiesLoading}
               >
                 <List

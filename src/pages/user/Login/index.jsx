@@ -6,7 +6,7 @@ import {
   UserOutlined,
   WeiboCircleOutlined,
 } from '@ant-design/icons';
-import { Alert, message, notification, Tabs } from 'antd';
+import { Alert, message, notification, Tabs, Image } from 'antd';
 import React, { useState } from 'react';
 import { ProFormCaptcha, ProFormCheckbox, ProFormText, LoginForm } from '@ant-design/pro-form';
 import { useIntl, history, FormattedMessage, SelectLang, useModel, Link } from 'umi';
@@ -14,6 +14,8 @@ import Footer from '@/components/Footer';
 import { login } from '@/services/ant-design-pro/api';
 import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 import styles from './index.less';
+
+import { generateSvgAvatar } from '../../../utils/avatarGenerator/random';
 
 const LoginMessage = ({ content }) => (
   <Alert
@@ -67,13 +69,13 @@ const Login = () => {
       message.error(defaultLoginFailureMessage);
     }
   };
-
   const { status, msg, type: loginType } = userLoginState;
   return (
     <div className={styles.container}>
       <div className={styles.lang} data-lang>
         {SelectLang && <SelectLang />}
       </div>
+      <Image src={generateSvgAvatar('cxz666')} />
       <div className={styles.content}>
         <LoginForm
           logo={<img alt="logo" src="/logo.svg" />}
