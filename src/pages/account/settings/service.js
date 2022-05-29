@@ -1,6 +1,6 @@
 import { request } from 'umi';
 export async function queryCurrent() {
-  return request('/api/user/me', {
+  return request('/api/user/info', {
     method: 'GET',
   });
 }
@@ -15,8 +15,8 @@ export async function query() {
 }
 
 export async function updateInfo(body) {
-  return request('/api/user/me', {
-    method: 'PUT',
+  return request('/api/user/modify/info', {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },

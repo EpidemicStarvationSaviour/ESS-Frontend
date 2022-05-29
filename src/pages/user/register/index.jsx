@@ -391,12 +391,12 @@ const Register = () => {
           rules={[{ required: true, message: '请选择你的身份' }]}
         >
           <Radio.Group onChange={(e) => setRole(e.target.value)}>
-            <Radio.Button value={0}>商家</Radio.Button>
-            <Radio.Button value={1}>骑手</Radio.Button>
-            <Radio.Button value={2}>用户</Radio.Button>
+            <Radio.Button value={1}>商家</Radio.Button>
+            <Radio.Button value={2}>骑手</Radio.Button>
+            <Radio.Button value={3}>用户</Radio.Button>
           </Radio.Group>
         </Form.Item>
-        {(role == 0 || role == 2) && (
+        {(role == 1 || role == 3) && (
           <>
             <Form.Item
               name="address"

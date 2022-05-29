@@ -7,6 +7,7 @@ import EditableLinkGroup from './components/EditableLinkGroup';
 import styles from './style.less';
 import { queryGroup, queryActivities, fakeChartData, queryWorkinfo } from './service';
 const links = [
+  //TODO FIXME!!
   {
     title: '创建tag',
     href: '/tag/tag-list',
@@ -92,10 +93,10 @@ const renderGroupList1 = (item) => (
         description={item.description}
       />
       <div className={styles.projectItemContent}>
-        <Link to={'/project/detail/' + item.id}>{'图片总数' + item.images.length}</Link>
+        <Link to={'/project/detail/' + item.id}>{'参团人数' + item.user_number}</Link>
         {item.createdTime && (
           <span className={styles.datetime} title={item.createdTime}>
-            {moment(item.createdTime).fromNow()}
+            {moment(item.created_time).fromNow()}
           </span>
         )}
       </div>
@@ -119,18 +120,14 @@ const renderGroupList2 = (item) => (
               size="small"
               src={'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png'}
             />
-            <Link to={'/project/detail/' + item.id}>{item.name}</Link>
+            <Link to={'/project/list/'}>{item.name}</Link>
           </div>
         }
-        description={item.description}
+        description={item.remark}
       />
       <div className={styles.projectItemContent}>
-        <Link to={'/project/detail/' + item.id}>{'图片总数' + item.images.length}</Link>
-        {item.createdTime && (
-          <span className={styles.datetime} title={item.createdTime}>
-            {moment(item.createdTime).fromNow()}
-          </span>
-        )}
+        <Link to={'/project/list/'}>{'收益总数' + item.total_price}</Link>
+        {<span className={styles.datetime}>{'商品种类:' + item.commodity_detail.length}</span>}
       </div>
     </Card>
   </Card.Grid>
@@ -152,18 +149,13 @@ const renderGroupList3 = (item) => (
               size="small"
               src={'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png'}
             />
-            <Link to={'/project/detail/' + item.id}>{item.name}</Link>
+            <Link to={'/project/list/'}>{item.name}</Link>
           </div>
         }
-        description={item.description}
+        description={item.remark + ' ' + item.creator_address.detail}
       />
       <div className={styles.projectItemContent}>
-        <Link to={'/project/detail/' + item.id}>{'图片总数' + item.images.length}</Link>
-        {item.createdTime && (
-          <span className={styles.datetime} title={item.createdTime}>
-            {moment(item.createdTime).fromNow()}
-          </span>
-        )}
+        <Link to={'/project/list/'}>{'收益总数' + item.reward}</Link>
       </div>
     </Card>
   </Card.Grid>
@@ -238,6 +230,7 @@ const Workplace = () => {
                 }}
                 title="进行中的团购"
                 bordered={false}
+                //TODO FIXME!
                 extra={<Link to="/project/list">全部项目</Link>}
                 loading={groupLoading}
                 bodyStyle={{
@@ -246,9 +239,9 @@ const Workplace = () => {
               >
                 {groupList.data.map((item) => {
                   switch (currentUser.user_role) {
-                    case 0:
-                      return renderGroupList2(item);
                     case 1:
+                      return renderGroupList2(item);
+                    case 2:
                       return renderGroupList3(item);
                     default:
                       return renderGroupList1(item);
@@ -261,7 +254,7 @@ const Workplace = () => {
                 }}
                 bordered={false}
                 className={styles.activeCard}
-                title="动态（静态数据)"
+                title="动态"
                 loading={activitiesLoading}
               >
                 <List

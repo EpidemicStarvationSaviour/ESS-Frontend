@@ -6,9 +6,11 @@ import { Link, useRequest } from 'umi';
 import Projects from './components/Projects';
 import Articles from './components/Articles';
 import Applications from './components/Applications';
-import { queryCurrent } from './service';
+import { queryCurrent, queryOwnGroup } from './service';
 import styles from './Center.less';
 import { fakeUserNotice } from './_mock.js';
+import { queryList } from '@/pages/project/ListCardList/service';
+import { queryGroup } from '@/pages/dashboard/workplace/service';
 const fakeTag = [
   {
     key: '0',
@@ -83,7 +85,7 @@ const operationTabList = [
   },
 ];
 
-const TagList = ({ tags }) => {
+const TagList = ({ ownGroup }) => {
   const ref = useRef(null);
   const [newTags, setNewTags] = useState([]);
   const [inputVisible, setInputVisible] = useState(false);
@@ -109,8 +111,8 @@ const TagList = ({ tags }) => {
       tempsTags = [
         ...tempsTags,
         {
-          key: `new-${tempsTags.length}`,
-          label: inputValue,
+          id: `new-${tempsTags.length}`,
+          name: inputValue,
         },
       ];
     }
@@ -123,8 +125,8 @@ const TagList = ({ tags }) => {
   return (
     <div className={styles.tags}>
       <div className={styles.tagsTitle}>标签</div>
-      {(tags || []).concat(newTags).map((item) => (
-        <Tag key={item.key}>{item.label}</Tag>
+      {(ownGroup || []).concat(newTags).map((item) => (
+        <Tag key={item.id}>{item.name}</Tag>
       ))}
       {inputVisible && (
         <Input
@@ -158,14 +160,24 @@ const Center = () => {
   const [tabKey, setTabKey] = useState('articles'); //  获取用户信息
 
   const { data: currentUser, loading } = useRequest(queryCurrent, {
-    formatResult: (e) => {
-      e.data.notice = fakeUserNotice;
-      console.log(e);
-      return e.data;
-    },
-  }); //  渲染用户信息
+    // formatResult: (e) => {
+    //   console.log(e);
+    //   return e.data;
+    // },
+  }); //
 
-  const renderUserInfo = ({ userEmail, userPhone, geographic }) => {
+  const { data: ownGroup, loading: ownGroupLoading } = useRequest(() =>
+    queryOwnGroup({ type: 0, page_num: 1, page_size: 10 }),
+  );
+
+  const { data: groupList, loading: groupLoading } = useRequest(() =>
+    queryGroup({ type: 0, page_num: 1, page_size: 10 }),
+  );
+  const renderUserInfo = ({ user_id, user_name, user_phone, user_address }) => {
+    let default_address = user_address.find((item) => item.is_default === true);
+    if (!default_address) {
+      default_address = user_address[0];
+    }
     return (
       <div className={styles.detail}>
         <p>
@@ -174,7 +186,7 @@ const Center = () => {
               marginRight: 8,
             }}
           />
-          {userEmail}
+          {user_id}
         </p>
         <p>
           <ClusterOutlined
@@ -182,7 +194,7 @@ const Center = () => {
               marginRight: 8,
             }}
           />
-          {userPhone}
+          {user_phone}
         </p>
         <p>
           <HomeOutlined
@@ -190,24 +202,17 @@ const Center = () => {
               marginRight: 8,
             }}
           />
-          {
-            (
-              geographic || {
-                province: {
-                  label: '浙江省',
-                },
-              }
-            ).province.label
-          }
-          {
-            (
-              geographic || {
-                city: {
-                  label: '杭州市',
-                },
-              }
-            ).city.label
-          }
+          {default_address.province}
+          {default_address.city}
+          {default_address.area}
+        </p>
+        <p>
+          <HomeOutlined
+            style={{
+              marginRight: 8,
+            }}
+          />
+          {default_address.detail}
         </p>
       </div>
     );
@@ -240,16 +245,16 @@ const Center = () => {
             }}
             loading={loading}
           >
-            {!loading && currentUser && (
+            {!loading && !groupLoading && !ownGroupLoading && currentUser && (
               <div>
                 <div className={styles.avatarHolder}>
                   <img alt="" src={'https://i.loli.net/2021/10/27/kJWcOx3RA6GwFEV.jpg'} />
-                  <div className={styles.name}>{currentUser.userName}</div>
+                  <div className={styles.name}>{currentUser.user_name}</div>
                   <div>{'Zero is start'}</div>
                 </div>
                 {renderUserInfo(currentUser)}
                 <Divider dashed />
-                <TagList tags={fakeTag} />
+                <TagList ownGroup={ownGroup.data} />
                 <Divider
                   style={{
                     marginTop: 16,
@@ -257,15 +262,12 @@ const Center = () => {
                   dashed
                 />
                 <div className={styles.team}>
-                  <div className={styles.teamTitle}>团队</div>
+                  <div className={styles.teamTitle}>参加的团</div>
                   <Row gutter={36}>
-                    {currentUser.notice &&
-                      currentUser.notice.map((item) => (
+                    {groupList &&
+                      groupList.data.map((item) => (
                         <Col key={item.id} lg={24} xl={12}>
-                          <Link to={item.href}>
-                            <Avatar size="small" src={item.logo} />
-                            {item.member}
-                          </Link>
+                          <Link>{item.name}</Link>
                         </Col>
                       ))}
                   </Row>
