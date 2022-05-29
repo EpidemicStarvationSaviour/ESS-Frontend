@@ -1,9 +1,16 @@
 import { request } from 'umi';
 export async function queryCurrent() {
-  return request('/api/user/me', {
+  return request('/api/user/info', {
     method: 'GET',
   });
 }
+export async function queryOwnGroup(params) {
+  return request('/api/group/own', {
+    method: 'GET',
+    data: params,
+  });
+}
+
 export function queryFakeList(params) {
   const count = Number(params.count) * 1 || 5;
   const result = fakeList(count);

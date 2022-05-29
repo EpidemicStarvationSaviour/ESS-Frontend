@@ -35,9 +35,34 @@ export async function getInitialState() {
   if (nonLoginPath.indexOf(history.location.pathname) === -1) {
     // const currentUser = await fetchUserInfo();
     const currentUser = {
-      name: '测试用户',
-      avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
-      id: 1,
+      user_id: 123123, // 用户唯一标识符
+      user_phone: '15833333333', // 用户联系方式
+      user_name: 'cxz', // 用户名
+      user_role: 1, // 用户身份。1:商家; 2:骑手; 3:居民
+      user_address: [
+        {
+          id: 1, //address id
+          lat: 123.111,
+          lng: 39.123,
+          province: '河南省',
+          city: '三门峡市',
+          area: '湖滨区',
+          detail: '六峰路绿江中央广场2号楼3单元109',
+          is_default: true,
+        },
+        {
+          id: 2, //address id
+          lat: 123.111,
+          lng: 39.123,
+          province: '河南省',
+          city: '三门峡市',
+          area: '湖滨区',
+          detail: '六峰路绿江中央广场2号楼3单元109',
+          is_default: false,
+        },
+      ], // 商家的唯一地址，居民、团长的默认收货地址
+      user_created_time: 123123, // 用户注册时间
+      user_updated_time: 123123213,
     };
     return {
       fetchUserInfo,

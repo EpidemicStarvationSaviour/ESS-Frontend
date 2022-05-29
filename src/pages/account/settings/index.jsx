@@ -4,16 +4,16 @@ import { Menu } from 'antd';
 import BaseView from './components/base';
 import BindingView from './components/binding';
 import NotificationView from './components/notification';
-import SecurityView from './components/security';
+import Address from './components/address';
 import styles from './style.less';
 const { Item } = Menu;
 
 const Settings = () => {
   const menuMap = {
     base: '基本设置',
-    security: '安全设置',
-    binding: '账号绑定',
-    notification: '新消息通知',
+    address: '地址管理',
+    join: '加入团体',
+    apply: '申请团长',
   };
   const [initConfig, setInitConfig] = useState({
     mode: 'inline',
@@ -64,13 +64,13 @@ const Settings = () => {
       case 'base':
         return <BaseView />;
 
-      case 'security':
-        return <SecurityView />;
+      case 'address':
+        return <Address />;
 
-      case 'binding':
+      case 'join':
         return <BindingView />;
 
-      case 'notification':
+      case 'apply':
         return <NotificationView />;
 
       default:
