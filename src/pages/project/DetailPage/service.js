@@ -1,49 +1,22 @@
 import { request } from 'umi';
-export async function queryAdvancedProfile() {
-  return request('/api/profile/advanced');
-}
-export async function QueryProject(id, data, options) {
-  return request('/api/project/' + id, {
-    data,
+
+export async function QueryProject(id, options) {
+  return request('/api/group/details/' + id, {
     method: 'GET',
     ...(options || {}),
   });
 }
 
-export async function ChangeStatus(id, data, options) {
-  return request('/api/project/cs/' + id, {
-    data,
+export function EditDetail(id, data, options) {
+  return request('/api/group/edit/' + id, {
+    data: data,
     method: 'PUT',
     ...(options || {}),
   });
 }
 
-export async function ChooseNumber(id, params, options) {
-  return request('/api/project/cn/' + id, {
-    params: params,
-    method: 'GET',
-    ...(options || {}),
-  });
-}
-
-export async function ChangeRegion(data, options) {
-  return request('/api/project/cr', {
-    data: data,
-    method: 'POST',
-    ...(options || {}),
-  });
-}
-
-export async function ChangeAnnotationType(data, options) {
-  return request('/api/project/ct', {
-    data: data,
-    method: 'POST',
-    ...(options || {}),
-  });
-}
-
 export async function DeleteProject(id, options) {
-  return request('/api/project/' + id, {
+  return request('/api/group/details/' + id, {
     method: 'DELETE',
     ...(options || {}),
   });
