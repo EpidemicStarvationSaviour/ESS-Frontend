@@ -1,13 +1,13 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Input, Drawer } from 'antd';
+import { Button, message, Input, Drawer, List, Avatar, Form, InputNumber } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import UpdateForm from './components/UpdateForm';
-import { rule, addRule, updateRule, removeRule } from './service';
+import { searchGroup, joinGroup } from './service';
 
+import moment from 'moment';
 /**
  * 添加节点
  *
@@ -17,7 +17,7 @@ const handleAdd = async (fields) => {
   const hide = message.loading('正在添加');
 
   try {
-    await addRule({ ...fields });
+    await joinGroup(fields);
     hide();
     message.success('添加成功');
     return true;
@@ -27,67 +27,22 @@ const handleAdd = async (fields) => {
     return false;
   }
 };
-/**
- * 更新节点
- *
- * @param fields
- */
-
-const handleUpdate = async (fields, currentRow) => {
-  const hide = message.loading('正在配置');
-
-  try {
-    await updateRule({ ...currentRow, ...fields });
-    hide();
-    message.success('配置成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('配置失败请重试！');
-    return false;
-  }
-};
-/**
- * 删除节点
- *
- * @param selectedRows
- */
-
-const handleRemove = async (selectedRows) => {
-  const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
-
-  try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    });
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
-
 const TableList = () => {
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState(false);
   /** 分布更新窗口的弹窗 */
 
-  const [updateModalVisible, handleUpdateModalVisible] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
   const actionRef = useRef();
   const [currentRow, setCurrentRow] = useState();
-  const [selectedRowsState, setSelectedRows] = useState([]);
+
   /** 国际化配置 */
 
   const columns = [
     {
-      title: '规则名称',
+      title: '名称',
       dataIndex: 'name',
-      tip: '规则名称是唯一的 key',
+      tip: '名称用于区分不同的团',
       render: (dom, entity) => {
         return (
           <a
@@ -103,56 +58,54 @@ const TableList = () => {
     },
     {
       title: '描述',
-      dataIndex: 'desc',
+      dataIndex: 'description',
       valueType: 'textarea',
     },
     {
-      title: '服务调用次数',
-      dataIndex: 'callNo',
-      sorter: true,
-      hideInForm: true,
-      renderText: (val) => `${val}万`,
+      title: '创建者',
+      dataIndex: 'creator_name',
+      valueType: 'textarea',
     },
     {
-      title: '状态',
-      dataIndex: 'status',
-      hideInForm: true,
+      title: '联系方式',
+      dataIndex: 'creator_phone',
+      valueType: 'textarea',
+      hideInSearch: true,
+    },
+    {
+      title: '团购状态',
+      dataIndex: 'type',
       valueEnum: {
         0: {
-          text: '关闭',
+          text: '全部',
           status: 'Default',
         },
         1: {
-          text: '运行中',
+          text: '已经创建',
           status: 'Processing',
         },
         2: {
-          text: '已上线',
-          status: 'Success',
+          text: '正在规划',
+          status: 'Warning',
         },
         3: {
-          text: '异常',
-          status: 'Error',
+          text: '正在配送',
+          status: 'Default',
+        },
+        4: {
+          text: '已完成',
+          status: 'Success',
         },
       },
     },
     {
-      title: '上次调度时间',
-      sorter: true,
-      dataIndex: 'updatedAt',
+      title: '创建时间',
+      dataIndex: 'created_time',
       valueType: 'dateTime',
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
+      hideInSearch: true,
 
-        if (`${status}` === '0') {
-          return false;
-        }
-
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！" />;
-        }
-
-        return defaultRender(item);
+      render: (dom, _) => {
+        return <span>{moment(parseInt(dom)).format('YYYY-MM-DD HH:mm:ss')}</span>;
       },
     },
     {
@@ -161,16 +114,22 @@ const TableList = () => {
       valueType: 'option',
       render: (_, record) => [
         <a
-          key="config"
+          key="details"
           onClick={() => {
-            handleUpdateModalVisible(true);
             setCurrentRow(record);
+            setShowDetail(true);
           }}
         >
-          配置
+          查看详情
         </a>,
-        <a key="subscribeAlert" href="https://procomponents.ant.design/">
-          订阅警报
+        <a
+          key="subscribeAlert"
+          onClick={() => {
+            setCurrentRow(record);
+            handleModalVisible(true);
+          }}
+        >
+          参团
         </a>,
       ],
     },
@@ -178,69 +137,47 @@ const TableList = () => {
   return (
     <PageContainer>
       <ProTable
-        headerTitle="查询表格"
+        headerTitle="开团列表"
         actionRef={actionRef}
         rowKey="key"
         search={{
           labelWidth: 120,
         }}
-        toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              handleModalVisible(true);
-            }}
-          >
-            <PlusOutlined /> 新建
-          </Button>,
-        ]}
-        request={rule}
-        columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
+        request={async (params, sort, filter) => {
+          console.log(params, sort, filter);
+          const result = await searchGroup({
+            page_size: params.pageSize,
+            page_num: params.current,
+            type: params.type,
+            name: params.name,
+            description: params.description,
+            creator_name: params.creator_name,
+          });
+          return {
+            data: result.data.data,
+            success: true,
+            total: result.data.count,
+          };
         }}
+        columns={columns}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择{' '}
-              <a
-                style={{
-                  fontWeight: 600,
-                }}
-              >
-                {selectedRowsState.length}
-              </a>{' '}
-              项 &nbsp;&nbsp;
-              <span>
-                服务调用次数总计 {selectedRowsState.reduce((pre, item) => pre + item.callNo, 0)} 万
-              </span>
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
-          </Button>
-          <Button type="primary">批量审批</Button>
-        </FooterToolbar>
-      )}
       <ModalForm
-        title="新建规则"
+        title="加入团购"
         width="400px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value) => {
-          const success = await handleAdd(value);
+          let request = {
+            id: currentRow.id,
+            data: [],
+          };
+          for (let i in value) {
+            request.data.push({
+              commodity_id: i,
+              number: value[i],
+            });
+          }
+          const success = await handleAdd(request);
 
           if (success) {
             handleModalVisible(false);
@@ -251,38 +188,29 @@ const TableList = () => {
           }
         }}
       >
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: '规则名称为必填项',
-            },
-          ]}
-          width="md"
-          name="name"
-        />
-        <ProFormTextArea width="md" name="desc" />
+        {currentRow?.commodity_detail.map((r) => {
+          return (
+            <Form.Item
+              key={r.id}
+              name={r.id}
+              label={r.name}
+              tooltip={
+                '单价：' +
+                item.price +
+                '元\n' +
+                '我已购买：' +
+                item.number +
+                '斤\n' +
+                '整个团购买' +
+                item.total_number +
+                '斤'
+              }
+            >
+              <InputNumber />
+            </Form.Item>
+          );
+        })}
       </ModalForm>
-      <UpdateForm
-        onSubmit={async (value) => {
-          const success = await handleUpdate(value, currentRow);
-
-          if (success) {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onCancel={() => {
-          handleUpdateModalVisible(false);
-          setCurrentRow(undefined);
-        }}
-        updateModalVisible={updateModalVisible}
-        values={currentRow || {}}
-      />
 
       <Drawer
         width={600}
@@ -295,16 +223,43 @@ const TableList = () => {
       >
         {currentRow?.name && (
           <ProDescriptions
-            column={2}
+            column={1}
             title={currentRow?.name}
             request={async () => ({
               data: currentRow || {},
             })}
-            params={{
-              id: currentRow?.name,
-            }}
             columns={columns}
-          />
+          >
+            <ProDescriptions.Item dataIndex="id" />
+            <ProDescriptions.Item dataIndex="name" label="名称" valueType="textarea" />
+            <ProDescriptions.Item label="参加人数" dataIndex="user_number" valueType="textarea" />
+            <ProDescriptions.Item label="总金额" dataIndex="total_price" valueType="textarea" />
+            {
+              <List
+                itemLayout="horizontal"
+                dataSource={currentRow?.commodity_detail}
+                renderItem={(item) => (
+                  <List.Item>
+                    <List.Item.Meta
+                      avatar={<Avatar src={item.avatar} />}
+                      title={item.name}
+                      description={
+                        '单价：' +
+                        item.price +
+                        '元\n' +
+                        '我已购买：' +
+                        item.number +
+                        '斤\n' +
+                        '整个团购买' +
+                        item.total_number +
+                        '斤'
+                      }
+                    />
+                  </List.Item>
+                )}
+              />
+            }
+          </ProDescriptions>
         )}
       </Drawer>
     </PageContainer>

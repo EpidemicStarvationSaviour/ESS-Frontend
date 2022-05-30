@@ -2,7 +2,6 @@ import React, { useState, useRef, useLayoutEffect } from 'react';
 import { GridContent } from '@ant-design/pro-layout';
 import { Menu } from 'antd';
 import BaseView from './components/base';
-import BindingView from './components/join';
 import Apply from './components/apply';
 import Address from './components/address';
 import styles from './style.less';
@@ -12,7 +11,6 @@ const Settings = () => {
   const menuMap = {
     base: '基本设置',
     address: '地址管理',
-    join: '加入团体',
     apply: '申请团长',
   };
   const [initConfig, setInitConfig] = useState({
@@ -66,9 +64,6 @@ const Settings = () => {
 
       case 'address':
         return <Address />;
-
-      case 'join':
-        return <BindingView />;
 
       case 'apply':
         return <Apply />;

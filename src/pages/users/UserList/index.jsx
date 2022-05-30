@@ -22,6 +22,7 @@ import moment from 'moment';
 import OperationModal from './components/OperationModal';
 import { Register, ListUser, DeleteUser, ChangeRole, QueryNum } from './service';
 import styles from './style.less';
+import { queryWorkinfo } from '@/pages/dashboard/workplace/service';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const { Search } = Input;
@@ -34,20 +35,26 @@ const Info = ({ title, value, bordered }) => (
   </div>
 );
 
-const ListContent = ({ data: { userType, userPhone } }) => (
+const ListContent = ({ data: { user_role, user_phone } }) => (
   <div className={styles.listContent}>
     <div className={styles.listContentItem}>
-      {userType == 1 ? (
-        <Tag color="blue">普通用户</Tag>
-      ) : userType == 2 ? (
-        <Tag color="green">管理员用户</Tag>
+      {user_role == 1 ? (
+        <Tag color="blue">商家</Tag>
+      ) : user_role == 2 ? (
+        <Tag color="green">骑手</Tag>
+      ) : user_role == 3 ? (
+        <Tag color="blue">居民</Tag>
+      ) : user_role == 4 ? (
+        <Tag color="green">团长</Tag>
+      ) : user_role == 5 ? (
+        <Tag color="blue">管理员用户</Tag>
       ) : (
-        <Tag color="red">系统管理员</Tag>
+        <Tag color="green">未知</Tag>
       )}
     </div>
     <div className={styles.listContentItem}>
       <span>手机号</span>
-      <p>{userPhone}</p>
+      <p>{user_phone}</p>
     </div>
   </div>
 );
@@ -56,13 +63,18 @@ export const UserList = () => {
   const [done, setDone] = useState(false);
   const [visible, setVisible] = useState(false);
   const [current, setCurrent] = useState(undefined);
+  const [type, setType] = useState(0);
   const {
     data: listData,
     run: refreshList,
     loading: listLoading,
     mutate,
   } = useRequest(() => {
-    return ListUser();
+    return ListUser({
+      page_size: 9999,
+      page_num: 1,
+      type: type,
+    });
   });
 
   const list = listData?.data || [];
@@ -80,7 +92,7 @@ export const UserList = () => {
 
   const deleteItem = async (id) => {
     try {
-      let msg = await DeleteUser({ id });
+      let msg = await DeleteUser({ user_id: id });
       if (msg.status == 'success') {
         notification.success({
           duration: 4,
@@ -105,108 +117,32 @@ export const UserList = () => {
     }
   };
 
-  const MoreHandler = async (key, currentItem) => {
-    if (key === 'changeType') {
-      try {
-        let msg = await ChangeRole({
-          userId: currentItem.userId || -1,
-          userType: currentItem.userType > 1 ? 1 : 2,
-        });
-        if (msg.status == 'success') {
-          notification.success({
-            duration: 4,
-            message: '更改成功',
-            description: '更改成功',
-          });
-        } else {
-          notification.error({
-            duration: 4,
-            message: '更改失败',
-            description: '修改失败，请联系系统管理员',
-          });
-        }
-        await refreshList();
-        await refreshNum();
-      } catch (error) {
-        notification.error({
-          duration: 4,
-          message: '更改失败',
-          description: msg.msg,
-        });
-      }
-      return;
-    }
-  };
   const {
     data: currentNum,
     run: refreshNum,
     loading: loadingNum,
   } = useRequest(() => {
-    return QueryNum();
+    return queryWorkinfo();
   });
 
   const extraContent = (
     <div className={styles.extraContent}>
-      <RadioGroup defaultValue="all">
-        <RadioButton value="all">全部</RadioButton>
-        <RadioButton value="admin">管理员</RadioButton>
-        <RadioButton value="normal">普通用户</RadioButton>
+      <RadioGroup
+        defaultValue={0}
+        onChange={(e) => {
+          setType(e.target.value);
+          refreshList();
+        }}
+      >
+        <RadioButton value={0}>全部</RadioButton>
+        <RadioButton value={1}>商家</RadioButton>
+        <RadioButton value={2}>骑手</RadioButton>
+        <RadioButton value={3}>居民</RadioButton>
+        <RadioButton value={4}>团长</RadioButton>
       </RadioGroup>
       <Search className={styles.extraContentSearch} placeholder="请输入" onSearch={() => ({})} />
     </div>
   );
-
-  const MoreBtn = ({ item }) => (
-    <Dropdown
-      overlay={
-        <Menu onClick={({ key }) => MoreHandler(key, item)}>
-          <Menu.Item key="changeType">
-            {item.userType == 1 ? '提升为管理员' : '改为普通用户'}
-          </Menu.Item>
-        </Menu>
-      }
-    >
-      <a>
-        更多 <DownOutlined />
-      </a>
-    </Dropdown>
-  );
-
-  const handleDone = () => {
-    setDone(false);
-    setVisible(false);
-    setCurrent({});
-  };
-
-  const handleSubmit = async (values) => {
-    //注意这里要取消cookie，否则register会带着cookie返回
-    values.noCookie = true;
-    try {
-      let res = await Register(values);
-      if (res.status != 'success') {
-        notification.error({
-          duration: 4,
-          message: '增加失败',
-          description: '添加用户失败，请自行排查http请求',
-        });
-      } else {
-        notification.success({
-          duration: 4,
-          message: '增加成功',
-        });
-        setDone(true);
-        refreshList();
-        refreshNum();
-      }
-    } catch (error) {
-      console.log(error);
-      notification.error({
-        duration: 4,
-        message: '增加失败',
-        description: error,
-      });
-    }
-  };
 
   return (
     <div>
@@ -216,13 +152,13 @@ export const UserList = () => {
             <Card bordered={false}>
               <Row>
                 <Col sm={8} xs={24}>
-                  <Info title="总用户" value={currentNum.total} bordered />
+                  <Info title="总用户" value={currentNum.total_users} bordered />
                 </Col>
                 <Col sm={8} xs={24}>
-                  <Info title="普通用户" value={currentNum.normal} bordered />
+                  <Info title="总拼团量" value={currentNum.total_groups} bordered />
                 </Col>
                 <Col sm={8} xs={24}>
-                  <Info title="管理员用户" value={currentNum.admin} />
+                  <Info title="总商品种类" value={currentNum.total_commodities} />
                 </Col>
               </Row>
             </Card>
@@ -253,24 +189,23 @@ export const UserList = () => {
                       key="edit"
                       onClick={(e) => {
                         e.preventDefault();
-                        deleteItem(item.userId || -1);
+                        deleteItem(item.user_id || -1);
                       }}
                     >
                       删除
                     </a>,
-                    <MoreBtn key="more" item={item} />,
                   ]}
                 >
                   <List.Item.Meta
                     avatar={
                       <Avatar
-                        src="https://i.loli.net/2021/10/27/kJWcOx3RA6GwFEV.jpg"
+                        src="https://joeschmoe.io/api/v1/random"
                         shape="square"
                         size="large"
                       />
                     }
-                    title={item.userName}
-                    description={item.userEmail}
+                    title={item.user_name}
+                    description={'id:' + item.user_id}
                   />
                   <ListContent data={item} />
                 </List.Item>
@@ -292,13 +227,6 @@ export const UserList = () => {
         <PlusOutlined />
         添加
       </Button>
-      <OperationModal
-        done={done}
-        visible={visible}
-        current={current}
-        onDone={handleDone}
-        onSubmit={handleSubmit}
-      />
     </div>
   );
 };

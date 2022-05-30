@@ -1,13 +1,13 @@
 import { request } from 'umi';
 
 export async function ListUser(params) {
-  return request('/api/users/list', {
+  return request('/api/admin/users', {
     method: 'GET',
-    params: { ...params },
+    params: params,
   });
 }
 export async function DeleteUser(params) {
-  return request('/api/users/user', {
+  return request('/api/admin/users', {
     method: 'DELETE',
     data: {
       ...params,
