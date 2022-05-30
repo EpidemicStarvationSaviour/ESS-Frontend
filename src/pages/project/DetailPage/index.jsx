@@ -5,11 +5,7 @@ import {
   SyncOutlined,
 } from '@ant-design/icons';
 import {
-  ModalForm,
-  ProForm,
-  ProFormDateRangePicker,
-  ProFormSelect,
-  ProFormText,
+  Form,
   Button,
   Card,
   Statistic,
@@ -24,12 +20,20 @@ import {
   notification,
 } from 'antd';
 import { GridContent, PageContainer, RouteContext } from '@ant-design/pro-layout';
-import React, { Fragment, useState } from 'react';
+import {
+  ModalForm,
+  ProForm,
+  ProFormDateRangePicker,
+  ProFormSelect,
+  ProFormText,
+} from '@ant-design/pro-form';
+import React, { Fragment, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { useAccess, history } from 'umi';
 import {
   EditDetail,
   DeleteProject,
+  queryCurrent
 } from './service';
 import moment from 'moment';
 import styles from './style.less';
@@ -41,6 +45,7 @@ const ProjectStatus = {
   4: '已经完成',
 };
 const ButtonGroup = Button.Group;
+
 const mobileMenu = (dispatch) => (
   <Menu
     onClick={(item) => {
@@ -56,60 +61,6 @@ const mobileMenu = (dispatch) => (
     <Menu.Item key="3">变更</Menu.Item>
     <Menu.Item key="4">删除</Menu.Item>
   </Menu>
-);
-const action = (dispatch) => (
-  <RouteContext.Consumer>
-    {({ isMobile }) => {
-      if (isMobile) {
-        return (
-          <Dropdown.Button
-            type="primary"
-            icon={<DownOutlined />}
-            overlay={mobileMenu(dispatch)}
-            placement="bottomRight"
-          >
-            选择操作
-          </Dropdown.Button>
-        );
-      }
-
-      return (
-        <Fragment>
-          <ButtonGroup>
-            <Button
-              icon={<SyncOutlined spin />}
-              onClick={(e) => {
-                dispatch(1);
-              }}
-            >
-              刷新
-            </Button>
-            <Button
-              onClick={(e) => {
-                dispatch(2);
-              }}
-            >
-              修改信息
-            </Button>
-            <Button
-              onClick={(e) => {
-                dispatch(3);
-              }}
-            >
-              改变状态
-            </Button>
-            <Button 
-              onClick={(e) => {
-                dispatch(4);
-              }}
-            >
-              删除
-            </Button>
-          </ButtonGroup>
-        </Fragment>
-      );
-    }}
-  </RouteContext.Consumer>
 );
 
 const extra = (project) => (
@@ -186,7 +137,64 @@ const DetailPage = (props) => {
   });
   const [projectStatus, changeProjectStatus] = useState(1);
   const [changeStatusVisible, setChangeStatusVisible] = useState(false);
+  const [editDetailVisible, setEditDetailVisible] = useState(false);
   const access = useAccess();
+  const [editDetailForm] = Form.useForm();
+
+  const action = (dispatch) => (
+    <RouteContext.Consumer>
+      {({ isMobile }) => {
+        if (isMobile) {
+          return (
+            <Dropdown.Button
+              type="primary"
+              icon={<DownOutlined />}
+              overlay={mobileMenu(dispatch)}
+              placement="bottomRight"
+            >
+              选择操作
+            </Dropdown.Button>
+          );
+        }
+  
+        return (
+          <Fragment>
+            <ButtonGroup>
+              <Button
+                icon={<SyncOutlined spin />}
+                onClick={(e) => {
+                  dispatch(1);
+                }}
+              >
+                刷新
+              </Button>
+              <Button
+                onClick={(e) => {
+                  dispatch(2);
+                }}
+              >
+                修改信息
+              </Button>
+              <Button
+                onClick={(e) => {
+                  dispatch(3);
+                }}
+              >
+                改变状态
+              </Button>
+              <Button 
+                onClick={(e) => {
+                  dispatch(4);
+                }}
+              >
+                删除
+              </Button>
+            </ButtonGroup>
+          </Fragment>
+        );
+      }}
+    </RouteContext.Consumer>
+  )
   // const {
   //   data: currentProject,
   //   run: runProject,
@@ -215,6 +223,53 @@ const DetailPage = (props) => {
   //     },
   //   },
   // );
+  // const { data : addressList} = useRequest(
+  //       () => {
+  //         return queryCurrent().user_address;
+  //       },
+  //       {onSuccess: (data, parma) => {
+  //         if (!data) {
+  //           message.error({
+  //             duration: 4,
+  //             content: '获取个人信息失败，请稍后重试',
+  //           });
+  //           return;
+  //         }
+  //       },
+  //       onError: (error, parma) => {
+  //         message.error({
+  //           duration: 4,
+  //           content: '获取个人信息失败，请稍后重试',
+  //         });
+  //       },
+  //     },
+  //   )
+  // }
+  const {addressList} = {
+    addressList:[
+      {
+          id: 1, //address id
+          lat: 123.111,
+          lng: 39.123,
+          province:"河南省",
+          city:"三门峡市",
+          area:"湖滨区",
+          detail:"六峰路绿江中央广场2号楼3单元109",
+          is_default: true,
+      },
+      {
+          id: 2, //address id
+          lat: 123.111,
+          lng: 39.123,
+          province:"河南省",
+          city:"三门峡市",
+          area:"湖滨区",
+          detail:"六峰路绿江中央广场2号楼3单元109",
+          is_default: false,
+      }
+     ]
+  }
+
   const {currentProject, runProject, loadingProject} = {
     currentProject: {
       id: 1,
@@ -310,7 +365,7 @@ const DetailPage = (props) => {
           message.error('您没有相应的权限');
           return;
         }
-        setChangeStatusVisible(true);
+        setEditDetailVisible(true);
         break;
       case 3:
         if (!access.canAgent) {
@@ -398,7 +453,7 @@ const DetailPage = (props) => {
       } else {
         notification.error({
           duration: 4,
-          message: '团体内容获取失败，请刷新重试',
+          message: '团体信息修改失败，请刷新重试',
           content: '',
         });
       }
@@ -407,7 +462,7 @@ const DetailPage = (props) => {
     } catch (error) {
       notification.error({
         duration: 4,
-        message: '团体内容获取失败，请刷新重试',
+        message: '团体信息修改失败，请刷新重试',
         content: error.message,
       });
     }
@@ -547,6 +602,94 @@ const DetailPage = (props) => {
           </Select>
         </Modal>
       )}
+      <ModalForm
+        title="修改信息"
+        onFinish={
+          async (values) => {
+            console.log(values);
+            try {
+              let res = await EditDetail(currentProject.id, values);
+              if (res.status == 'success') {
+                notification.success({
+                  duration: 4,
+                  message: '修改成功',
+                  content: '修改成功',
+                });
+              } else {
+                notification.error({
+                  duration: 4,
+                  message: '团体信息修改失败，请刷新重试',
+                  content: '',
+                });
+              }
+              setChangeStatusVisible(false);
+              runProject();
+            } catch (error) {
+              notification.error({
+                duration: 4,
+                message: '团体信息修改失败，请刷新重试',
+                content: error.message,
+              })
+            }
+            return true
+          }
+        }
+        visible={editDetailVisible}
+        onVisibleChange={(visible)=>{
+          if(visible){
+            var {...group} = currentProject
+            group.address_id = group.creator_address.id;
+            editDetailForm.setFieldsValue(group)
+          }
+          setEditDetailVisible(visible)
+        }}
+        form={editDetailForm}
+      >
+        <ProFormText
+          label="团体名称"
+          name="name"
+          rules={[
+            {
+              required: true,
+              max: 20,
+              message: '请输入',
+            },
+          ]}
+        />
+        <ProFormText
+          label="团体描述"
+          name="description"
+          rules={[
+            {
+              required: true,
+              max: 50,
+              message: '请输入',
+            },
+          ]}
+        />
+        <ProFormText
+          label="订单备注"
+          name="remark"
+          rules={[
+            {
+              required: true,
+              max: 50,
+              message: '请输入',
+            },
+          ]}
+        />
+        <ProFormSelect
+          label="派送地址"
+          name="address_id"
+          options={addressList.map(
+            (e) => {return {
+              label:[e.province, e.city, e.area, e.detail].join(" "), 
+              value: e.id
+            }}
+          )}
+        >
+        </ ProFormSelect>
+      </ ModalForm>
     </>
   );
 };

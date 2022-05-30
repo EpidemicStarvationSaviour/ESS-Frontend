@@ -1,5 +1,11 @@
 import { request } from 'umi';
 
+export async function queryCurrent() {
+  return request('/api/user/info', {
+    method: 'GET',
+  });
+}
+
 export async function QueryProject(id, options) {
   return request('/api/group/details/' + id, {
     method: 'GET',
