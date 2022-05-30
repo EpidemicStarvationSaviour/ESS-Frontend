@@ -82,13 +82,11 @@ export default defineConfig({
         },
       ],
     },
-
     {
       name: 'exception',
       icon: 'warning',
       path: '/exception',
       hideInMenu: true,
-
       routes: [
         {
           path: '/exception',
@@ -134,6 +132,12 @@ export default defineConfig({
           icon: 'smile',
           path: '/account/settings',
           component: './account/settings',
+        },
+        {
+          name: '加入团队',
+          icon: 'smile',
+          path: '/account/join',
+          component: './account/Join',
         },
       ],
     },

@@ -2,8 +2,8 @@ import React, { useState, useRef, useLayoutEffect } from 'react';
 import { GridContent } from '@ant-design/pro-layout';
 import { Menu } from 'antd';
 import BaseView from './components/base';
-import BindingView from './components/binding';
-import NotificationView from './components/notification';
+import BindingView from './components/join';
+import Apply from './components/apply';
 import Address from './components/address';
 import styles from './style.less';
 const { Item } = Menu;
@@ -71,7 +71,7 @@ const Settings = () => {
         return <BindingView />;
 
       case 'apply':
-        return <NotificationView />;
+        return <Apply />;
 
       default:
         return null;
