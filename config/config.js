@@ -169,9 +169,35 @@ export default defineConfig({
         {
           name: '商品管理',
           icon: 'smile',
-          path: '/users/commdity',
+          path: '/users/commodity',
           component: './users/Commdity',
           // access: 'canSysAdmin',
+        },
+      ],
+    },
+    {
+      path: '/commodity',
+      name: '商品管理',
+      icon: 'profile',
+      routes: [
+        {
+          name: '商品管理',
+          icon: 'profile',
+          path: '/commodity/commodity',
+          component: './commodity/Commodity',
+        },
+      ],
+    },
+    {
+      path: '/order',
+      name: '订单管理',
+      icon: 'profile',
+      routes: [
+        {
+          name: '订单管理',
+          icon: 'profile',
+          path: '/order/ListCardList',
+          component: './order/ListCardList',
         },
       ],
     },
