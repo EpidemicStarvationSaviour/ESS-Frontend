@@ -1,20 +1,19 @@
 import { request } from 'umi';
 export async function SubmitForm(params) {
-  return request('/api/project/new', {
+  return request('/api/group/create', {
     method: 'POST',
     data: params,
   });
 }
 
-export async function QueryTags(params) {
-  return request('/api/class/allclass', {
+export async function QueryCurrent() {
+  return request('/api/user/info', {
     method: 'GET',
-    data: params,
   });
 }
 
-export async function QueryUsers(params) {
-  return request('/api/users/alluser', {
+export async function QueryGroupList(params) {
+  return request('/api/group/list', {
     method: 'GET',
     data: params,
   });

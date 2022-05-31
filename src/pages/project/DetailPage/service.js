@@ -27,3 +27,10 @@ export async function DeleteProject(id, options) {
     ...(options || {}),
   });
 }
+
+export async function GetCommodityList(options){
+  return request('/api/commodity/list', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}

@@ -9,15 +9,16 @@ import ProForm, {
 } from '@ant-design/pro-form';
 import ProTable, { EditableProTable } from '@ant-design/pro-table';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import { SubmitForm, QueryTags, QueryUsers } from './service';
+import { SubmitForm, QueryGroupList, QueryCurrent } from './service';
 import { useRequest, history } from 'umi';
 
 import styles from './style.less';
 const fieldLabels = {
-  name: '项目名称',
+  name: '团体名称',
   description: '详细描述',
-  classId: '标记类名',
-  userId: '添加协作者',
+  remark: '备注',
+  address_id: '派送地址',
+  id: '一键导入过往团的成员',
 };
 
 const Create = () => {
@@ -89,7 +90,7 @@ const Create = () => {
     console.log(values);
     setError([]);
     let userList = userData.map((r) => {
-      return r.userId;
+      return r.id;
     });
     values.userList = userList;
     try {
@@ -115,33 +116,50 @@ const Create = () => {
       });
     }
   };
-  const { data: currentTag, loading: loadingTag } = useRequest(() => {
-    return QueryTags();
+  const {addressList} = {
+    addressList:[
+      {
+          id: 1, //address id
+          lat: 123.111,
+          lng: 39.123,
+          province:"河南省",
+          city:"三门峡市",
+          area:"湖滨区",
+          detail:"六峰路绿江中央广场2号楼3单元109",
+          is_default: true,
+      },
+      {
+          id: 2, //address id
+          lat: 123.111,
+          lng: 39.123,
+          province:"河南省",
+          city:"三门峡市",
+          area:"湖滨区",
+          detail:"六峰路绿江中央广场2号楼3单元109",
+          is_default: false,
+      }
+     ]
+  }
+
+  const { data: Groups, loading: loadingGroups } = useRequest(() => {
+    return QueryGroupList();
   });
-  const { data: currentUser, loading: loadingUser } = useRequest(() => {
-    return QueryUsers();
-  });
+
   const onFinishFailed = (errorInfo) => {
     setError(errorInfo.errorFields);
   };
   const ref = useRef();
   const columns = [
     {
-      title: '成员姓名',
-      dataIndex: 'userName',
-      key: 'userName',
-      width: '20%',
+      title: '团体名称',
+      dataIndex: 'name',
+      key: 'name',
+      width: '25%',
     },
     {
-      title: '邮箱',
-      dataIndex: 'userEmail',
-      key: 'userEmail',
-      width: '20%',
-    },
-    {
-      title: '手机',
-      dataIndex: 'userPhone',
-      key: 'userPhone',
+      title: '创建人',
+      dataIndex: 'creator_name',
+      key: 'creator_name',
       width: '40%',
     },
     {
@@ -153,7 +171,7 @@ const Create = () => {
           <a
             key="delete"
             onClick={() => {
-              setUserData(userData.filter((r) => r.userId != record.userId));
+              setUserData(userData.filter((r) => r.id != record.id));
             }}
           >
             删除
@@ -162,9 +180,10 @@ const Create = () => {
       },
     },
   ];
+  const loadingAddress = false
   return (
     <>
-      {loadingTag | loadingUser ? null : (
+      {loadingAddress | loadingGroups ? null : (
         <ProForm
           layout="vertical"
           hideRequiredMark
@@ -182,10 +201,10 @@ const Create = () => {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
         >
-          <PageContainer content="从这里开始创建一个任务">
-            <Card title="任务管理" className={styles.card} bordered={false}>
+          <PageContainer content="从这里开始创建一个团体">
+            <Card title="团体管理" className={styles.card} bordered={false}>
               <Row gutter={16}>
-                <Col lg={6} md={12} sm={24}>
+                <Col lg={3} md={12} sm={24}>
                   <ProFormText
                     label={fieldLabels.name}
                     name="name"
@@ -200,8 +219,8 @@ const Create = () => {
                 </Col>
                 <Col
                   xl={{
-                    span: 6,
-                    offset: 2,
+                    span: 5,
+                    offset: 1,
                   }}
                   lg={{
                     span: 8,
@@ -218,15 +237,40 @@ const Create = () => {
                       {
                         required: true,
                         max: 50,
-                        message: '请选择',
+                        message: '请输入',
                       },
                     ]}
                   />
                 </Col>
                 <Col
                   xl={{
+                    span: 5,
+                    offset: 1,
+                  }}
+                  lg={{
                     span: 8,
-                    offset: 2,
+                  }}
+                  md={{
+                    span: 12,
+                  }}
+                  sm={24}
+                >
+                  <ProFormText
+                    label={fieldLabels.remark}
+                    name="remark"
+                    rules={[
+                      {
+                        required: true,
+                        max: 50,
+                        message: '请输入',
+                      },
+                    ]}
+                  />
+                </Col>
+                <Col
+                  xl={{
+                    span: 7,
+                    offset: 1,
                   }}
                   lg={{
                     span: 10,
@@ -236,19 +280,17 @@ const Create = () => {
                   }}
                   sm={24}
                 >
-                  <ProFormSelect
-                    allowClear
-                    autoClearSearchValue
-                    label={fieldLabels.classId}
-                    name="classId"
-                    rules={[
-                      {
-                        required: true,
-                        message: '请选择类名',
-                      },
-                    ]}
-                    options={currentTag}
-                  />
+                <ProFormSelect
+                  label="派送地址"
+                  name="address_id"
+                  options={addressList.map(
+                    (e) => {return {
+                      label:[e.province, e.city, e.area, e.detail].join(" "), 
+                      value: e.id
+                    }}
+                  )}
+                >
+                </ ProFormSelect>
                 </Col>
               </Row>
             </Card>
@@ -267,21 +309,21 @@ const Create = () => {
                   sm={24}
                 >
                   <ProFormSelect
-                    label={fieldLabels.userId}
+                    label={fieldLabels.id}
                     allowClear={true}
                     autoClearSearchValue={true}
                     mode="tags"
                     options={
-                      currentUser
-                        ? currentUser.map((r) => {
+                      Groups
+                        ? Groups.map((r) => {
                             return {
-                              label: r.userName,
+                              label: r.name,
                               value: JSON.stringify(r),
                             };
                           })
                         : [
                             {
-                              label: '未找到用户',
+                              label: '未找到团体',
                               value: null,
                             },
                           ]

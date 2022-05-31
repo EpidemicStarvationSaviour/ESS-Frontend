@@ -3,8 +3,14 @@ import {
   DownOutlined,
   ExclamationCircleOutlined,
   SyncOutlined,
+  PlusCircleTwoTone,
+  MinusCircleTwoTone,
+  PlusOutlined,
+  MinusOutlined
 } from '@ant-design/icons';
 import {
+  Image,
+  Table,
   Form,
   Button,
   Card,
@@ -27,13 +33,14 @@ import {
   ProFormSelect,
   ProFormText,
 } from '@ant-design/pro-form';
-import React, { Fragment, useRef, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import classNames from 'classnames';
-import { useAccess, history } from 'umi';
+import { useRequest, useAccess, history } from 'umi';
 import {
   EditDetail,
   DeleteProject,
-  queryCurrent
+  queryCurrent,
+  GetCommodityList
 } from './service';
 import moment from 'moment';
 import styles from './style.less';
@@ -245,6 +252,75 @@ const DetailPage = (props) => {
   //     },
   //   )
   // }
+  // const { data : commodity_list} = useRequest(
+  //     () => {
+  //       return GetCommodityList()
+  //     },
+  //     {onSuccess: (data, parma) => {
+  //       if (!data) {
+  //         message.error({
+  //           duration: 4,
+  //           content: '获取商品种类失败，请稍后重试',
+  //         });
+  //         return;
+  //       }
+  //     },
+  //     onError: (error, parma) => {
+  //       message.error({
+  //         duration: 4,
+  //         content: '获取商品种类失败，请稍后重试',
+  //       });
+  //     },
+  //   },
+  // )
+  const commodity_list = [
+    //返回的是表示第一大类的数组
+    {
+        type_id:1,
+        type_name:"水果",
+        type_number: 10, //该大类下有10种商品
+        type_avatar: "https://a.b.c", //大类的图片
+        children:[
+            {
+            id: 1, //这是db的id
+            name: "苹果",
+            avatar:"https://a.b.c",//图片url
+            total: 2000, //数量为斤，是所有商店 全部加起来 整个地区一共有这么多
+            price: 10.1, //单价
+            },
+            {
+             id: 2,
+             name: "香蕉",
+             avatar:"https://a.b.c",//图片url
+             total: 150, 
+             price: 10.1, //单价        
+            }
+        ]
+    },
+    {
+        type_id:2,
+        type_name:"海鲜",
+        type_number: 10, //该大类下有10种商品
+        type_avatar: "https://a.b.c", //大类的图片    
+        children:[
+            {
+            id: 10, //这是db的id
+            avatar:"https://a.b.c",//图片url
+            name: "澳洲龙虾",
+            total: 2000, //数量为斤，是所有商店 全部加起来 整个地区一共有这么多
+            price: 10.1, //单价
+            },
+            {
+             id: 20,
+             name: "美国鱿鱼",
+             avatar:"https://a.b.c",//图片url
+             total: 1000, 
+             price: 10.1, //单价
+            }
+        ]
+    }
+  ]
+
   const {addressList} = {
     addressList:[
       {
@@ -294,9 +370,9 @@ const DetailPage = (props) => {
       commodity_detail:[
           {
               type_id: 12,
-              id: 10,
+              id: 1,
               name:"苹果",
-              avatar: "https://sdf.sdf",
+              avatar: "https://imgservice.suning.cn/uimg1/b2c/image/YKuZCrn257W0MBexrPNgKg.png_800w_800h_4e",
               price: 10, //单价
               total_number: 125.5,// 整个团买了多少斤
               users: [ //每个人买了多少斤
@@ -317,9 +393,9 @@ const DetailPage = (props) => {
           },
           {
               type_id: 12,
-              id: 11,
+              id: 2,
               name:"香蕉",
-              avatar: "https://sdf.sdf",
+              avatar: "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.pddpic.com%2Fmms-material-img%2F2020-06-08%2F29e482ca-6796-450c-b422-13cd9a6f4fd1.jpeg&refer=http%3A%2F%2Fimg.pddpic.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1656593460&t=c3599c4788adf587e6687b1b1783c99e",
               price: 11, //单价
               number: 13.5, //我买了多少斤
               total_number: 135.5,// 整个团买了多少斤
@@ -334,7 +410,7 @@ const DetailPage = (props) => {
                       user_id: 2,
                       user_name: "cxz6666",
                       user_phone: "13333333334",
-                      number: 12, //这个逼买了多少斤 
+                      number: 22, //这个逼买了多少斤 
                   },
               ]
           }
@@ -496,7 +572,7 @@ const DetailPage = (props) => {
           </RouteContext.Consumer>
         </Card>
         <Card
-          title="参与者信息"
+          title="订单信息"
           style={{
             marginBottom: 24,
           }}
@@ -511,26 +587,54 @@ const DetailPage = (props) => {
               {currentProject?.commodity_detail.length}
             </Descriptions.Item>
           </Descriptions>
-          <Card type="inner" title="协作者完成情况">
-            {currentProject?.workers ? (
+          <Card type="inner" title="商品详情">
+            {currentProject?.commodity_detail ? (
               <>
-                {currentProject.workers.map((r) => {
+                {currentProject.commodity_detail.map((r) => {
                   return (
-                    <>
+                    <div key={r.id}>
                       <Descriptions
                         style={{
                           marginBottom: 16,
                         }}
-                        title={r.UserName}
+                        title={r.name}
+                        column={{ xs: 1, sm: 2, md: 5}}
                       >
-                        <Descriptions.Item label="ID">{r.UserId}</Descriptions.Item>
-                        <Descriptions.Item label="邮箱">{r.UserEmail}</Descriptions.Item>
-                        <Descriptions.Item label="手机号">{r.UserPhone}</Descriptions.Item>
-                        <Descriptions.Item label="提交标记数量">
-                          {currentProject.annotations.reduce(
-                            (a, v) => (v.workerId === r.UserId ? a + 1 : a),
-                            0,
-                          )}
+                        <Descriptions.Item>
+                          <Image src={r.avatar} height={80} alt={r.name}/>  
+                        </Descriptions.Item>
+                        <Descriptions.Item label="单价">{r.price}</Descriptions.Item>
+                        <Descriptions.Item label="总量">{r.total_number}</Descriptions.Item>
+                        <Descriptions.Item label="购买人数">{r.users.length}</Descriptions.Item>
+                        <Descriptions.Item>
+                          <Button type="link" onClick={
+                            ()=>{
+                              Modal.info({
+                                title:"购买人列表",
+                                content: <Table 
+                                  columns={[
+                                    {    
+                                      title: '姓名',
+                                      dataIndex: 'user_name',
+                                      key: 'name',
+                                    },{
+                                        title: '电话',
+                                        dataIndex: 'user_phone',
+                                        key: 'phone',
+                                    },{
+                                      title: '数量',
+                                      dataIndex: 'number',
+                                      key: 'number',
+                                    }]} 
+                                    pagination={false}
+                                    size={"small"}
+                                    bordered={true}
+                                    dataSource={r.users} />
+                              })
+                            }
+                          }>
+                            查看明细
+                          </Button>
                         </Descriptions.Item>
                       </Descriptions>
                       <Divider
@@ -538,7 +642,7 @@ const DetailPage = (props) => {
                           margin: '16px 0',
                         }}
                       />
-                    </>
+                    </div>
                   );
                 })}
               </>
@@ -549,8 +653,110 @@ const DetailPage = (props) => {
     </div>
   );
 
+  const commodity = (
+    <div className={styles.main}>
+      <GridContent>
+        <Card
+          title="商品种类"
+          style={{
+            marginBottom: 24,
+          }}
+          bordered={false}
+        >
+        <Table
+          columns={
+            [{
+              title: '种类',
+              dataIndex: 'type_name',
+              key: 'type_name'
+            },
+            {
+              title: '图片',
+              dataIndex: 'type_avatar',
+              key: 'type_avatar'
+            }]
+          }
+          dataSource={
+            commodity_list.map(
+              (e)=>{
+                return {
+                  key: e.type_id,
+                  type_name: e.type_name,
+                  type_avatar: <Image src={e.type_avatar} height={80} alt={e.type_name}/>,
+                  subcommodity: e.children
+                }
+              }
+            )
+          }
+          expandable={{
+            defaultExpandAllRows: true,
+            expandedRowRender: (record) => (
+                <Table columns={           
+                  [{
+                    title: '名称',
+                    dataIndex: 'name',
+                    key: 'name'
+                    
+                  },
+                  {
+                    title: '图片',
+                    dataIndex: 'avatar',
+                    key: 'avatar',
+                    render: (text, record, index) => (
+                      <Image src={text} alt={record.name} height={80}/>
+                    )
+                  },
+                  {
+                    title: '单价',
+                    dataIndex: 'price',
+                    key: 'price'
+                  },
+                  {
+                    title: '库存',
+                    dataIndex: 'total',
+                    key: 'total'
+                  },
+                  {
+                    title: '操作',
+                    key: 'operation',
+                    render: (text, record, index)=>(
+                      currentProject.commodity_detail.find(({id})=>(id==record.id)) ?  
+                        <Button danger size="large" shape="circle" icon={<MinusOutlined/>}></Button>:
+                        <Button type="primary" size="large" shape="circle" icon={<PlusOutlined/>}></Button>
+                    )
+                  },
+                ]} 
+                dataSource={record.subcommodity.map((e)=>(e.key=e.id, e))} 
+                pagination={false} 
+                /> 
+            )
+          }}
+        >
+        </Table>
+        </Card>
+      </GridContent>
+    </div>
+  )
+
+  const purchaser =(
+    <div className={styles.main}>
+      <GridContent>
+        <Card
+          title="成员详情"
+          style={{
+            marginBottom: 24,
+          }}
+          bordered={false}
+        >
+      </Card>
+      </GridContent>
+    </div>
+  )
+
   const content = {
     detail: detail,
+    commodity: currentProject.type === 1 ? commodity: undefined,
+    purchaser: currentProject.type === 1 ? purchaser: undefined,
   };
 
   return (
