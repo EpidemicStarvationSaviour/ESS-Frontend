@@ -263,7 +263,6 @@ export default defineConfig({
       icon: 'smile',
       path: '/group',
       component: './project/ListCardList',
-      access: 'canPurchaser',
     },
     {
       component: '404',

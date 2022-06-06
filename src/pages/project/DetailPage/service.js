@@ -6,7 +6,7 @@ export async function queryCurrent() {
   });
 }
 
-export async function QueryProject(id, options) {
+export async function queryProject(id, options) {
   return request('/api/group/details/' + id, {
     method: 'GET',
     ...(options || {}),

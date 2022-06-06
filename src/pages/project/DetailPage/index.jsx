@@ -39,6 +39,7 @@ import { useRequest, useAccess, history } from 'umi';
 import {
   EditDetail,
   DeleteProject,
+  queryProject,
   queryCurrent,
   GetCommodityList
 } from './service';
@@ -143,6 +144,20 @@ const DetailPage = (props) => {
     tabActiveKey: 'detail',
   });
   const [projectStatus, changeProjectStatus] = useState(1);
+  const [groupNumbers, setGroupNumbers] = useState( 
+    [{
+      key: 1,
+      id: 1,
+      name: "cxz666",
+      phone: "13333333333",
+    },
+    {
+      key: 2,
+      id: 2,
+      name: "cxz6666",
+      phone: "13333333334",
+    }]
+  );
   const [changeStatusVisible, setChangeStatusVisible] = useState(false);
   const [editDetailVisible, setEditDetailVisible] = useState(false);
   const access = useAccess();
@@ -208,7 +223,7 @@ const DetailPage = (props) => {
   //   loading: loadingProject,
   // } = useRequest(
   //   () => {
-  //     return QueryProject(props.match.params.id);
+  //     return queryProject(props.match.params.id);
   //   },
   //   {
   //     onSuccess: (data, parma) => {
@@ -219,8 +234,21 @@ const DetailPage = (props) => {
   //         });
   //         return;
   //       }
-  //       //注意修改当前的status状态
-  //       changeProjectStatus(data.type);
+  //       if (data.code === 0) {
+  //         var numbers = new Set()
+  //         data.commodity_detail.forEach(e => {
+  //           e.users.forEach(u => {
+  //             numbers.add({
+  //               key: u.user_id,
+  //               id: u.user_id,
+  //               name: u.user_name,
+  //               phone: u.user_phone
+  //             })
+  //           })
+  //         })
+  //         setGroupNumbers(Array.from(numbers))
+  //         changeProjectStatus(data.type);
+  //       }
   //     },
   //     onError: (error, parma) => {
   //       message.error({
@@ -346,7 +374,7 @@ const DetailPage = (props) => {
      ]
   }
 
-  const {currentProject, runProject, loadingProject} = {
+const {currentProject, runProject, loadingProject} = {
     currentProject: {
       id: 1,
       name: "32舍鸡蛋冲冲冲",//团的名字
@@ -426,7 +454,7 @@ const DetailPage = (props) => {
           eta: 12.5, //预计送到小区的到达时间，单位为分钟
     }
   },
-  runProject: () => {},
+  runProject: ()=>{},
   loadingProject: false,
   }
 
@@ -748,6 +776,37 @@ const DetailPage = (props) => {
           }}
           bordered={false}
         >
+        <Table
+          columns={
+              [{
+                title: 'ID',
+                dataIndex: 'id',
+                key: 'id'
+              },
+              {
+                title: '用户名',
+                dataIndex: 'name',
+                key: 'name'
+              },
+              {
+                title: '电话',
+                dataIndex: 'phone',
+                key: 'phone'
+              },
+              {
+                title: '操作',
+                key: 'operation',
+                render: (text, record, index)=>(
+                    <Button danger size="large">移除</Button>
+                )
+              }
+              ]
+            }
+            dataSource = {
+              groupNumbers
+            }
+        >
+        </Table>
       </Card>
       </GridContent>
     </div>
@@ -755,8 +814,8 @@ const DetailPage = (props) => {
 
   const content = {
     detail: detail,
-    commodity: currentProject.type === 1 ? commodity: undefined,
-    purchaser: currentProject.type === 1 ? purchaser: undefined,
+    commodity: !loadingProject && currentProject.type === 1 ? commodity: undefined,
+    purchaser: !loadingProject && currentProject.type === 1 ? purchaser: undefined,
   };
 
   return (
@@ -812,7 +871,6 @@ const DetailPage = (props) => {
         title="修改信息"
         onFinish={
           async (values) => {
-            console.log(values);
             try {
               let res = await EditDetail(currentProject.id, values);
               if (res.status == 'success') {
@@ -828,7 +886,7 @@ const DetailPage = (props) => {
                   content: '',
                 });
               }
-              setChangeStatusVisible(false);
+              setEditDetailVisible(false);
               runProject();
             } catch (error) {
               notification.error({

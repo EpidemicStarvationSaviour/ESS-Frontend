@@ -1,20 +1,24 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Card, List, Typography, Row, Col, message, Tag } from 'antd';
+import { Button, Card, List, Typography, Row, Col, message, Tag, Form, Image, InputNumber} from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
+import React, { useState } from 'react';
 import { useRequest, useAccess, Access, history } from 'umi';
-import { queryList, queryOwn } from './service';
+import { queryList } from './service';
 import styles from './style.less';
 const { Paragraph } = Typography;
-
+import {
+  ModalForm,
+} from '@ant-design/pro-form';
+import {
+  EditableProTable,
+} from '@ant-design/pro-table';
 const ListCardList = () => {
   const access = useAccess();
+  const [editNeedVisible, setEditNeedVisible] = useState(false)
+  const [commodityInfo, setCommodityInfo] = useState([])
+  const [formRef] = Form.useForm();
   // const { data: listData, loading } = useRequest(() => {
-  //     return access.canAgent?
-  //       queryOwn({
-  //         pageSize: 10000,
-  //         current: 0,
-  //       }):
-  //       queryList({
+  //     return queryList({
   //         pageSize: 10000,
   //         current: 0,
   //       })
@@ -47,7 +51,7 @@ const ListCardList = () => {
                         type_id: 12,
                         id: 10,
                         name:"苹果",
-                        avatar: "https://sdf.sdf",
+                        avatar: "https://imgservice.suning.cn/uimg1/b2c/image/YKuZCrn257W0MBexrPNgKg.png_800w_800h_4e",
                         price: 10, //单价
                         number: 12.5, //我买了多少斤
                         total_number: 125.5,// 整个团买了多少斤
@@ -56,7 +60,7 @@ const ListCardList = () => {
                         type_id: 12,
                         id: 11,
                         name:"香蕉",
-                        avatar: "https://sdf.sdf",
+                        avatar: "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.pddpic.com%2Fmms-material-img%2F2020-06-08%2F29e482ca-6796-450c-b422-13cd9a6f4fd1.jpeg&refer=http%3A%2F%2Fimg.pddpic.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1656593460&t=c3599c4788adf587e6687b1b1783c99e",
                         price: 11, //单价
                         number: 13.5, //我买了多少斤
                         total_number: 135.5,// 整个团买了多少斤
@@ -89,7 +93,7 @@ const ListCardList = () => {
                         type_id: 12,
                         id: 10,
                         name:"苹果",
-                        avatar: "https://sdf.sdf",
+                        avatar: "https://imgservice.suning.cn/uimg1/b2c/image/YKuZCrn257W0MBexrPNgKg.png_800w_800h_4e",
                         price: 10, //单价
                         number: 12.5, //我买了多少斤
                         total_number: 125.5,// 整个团买了多少斤
@@ -98,7 +102,7 @@ const ListCardList = () => {
                         type_id: 12,
                         id: 11,
                         name:"香蕉",
-                        avatar: "https://sdf.sdf",
+                        avatar: "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.pddpic.com%2Fmms-material-img%2F2020-06-08%2F29e482ca-6796-450c-b422-13cd9a6f4fd1.jpeg&refer=http%3A%2F%2Fimg.pddpic.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1656593460&t=c3599c4788adf587e6687b1b1783c99e",
                         price: 11, //单价
                         number: 13.5, //我买了多少斤
                         total_number: 135.5,// 整个团买了多少斤
@@ -193,7 +197,7 @@ const ListCardList = () => {
                           key="toDetail"
                           type="link"
                           onClick={(e) => {
-                            history.push('/project/detail/' + item.id);
+                            history.push('/project/detail/' + item.id)
                           }}
                         >
                           查看详情
@@ -204,9 +208,11 @@ const ListCardList = () => {
                           type="link"
                           onClick={(e) => {
                             if (item.type === 1 && !access.canAgent) {
-                              message.error('该项目暂未开放，请联系团长开放该项目');
+                              message.error('该项目暂未开放，请联系团长开放该项目')
                               return;
                             }
+                            setCommodityInfo(item.commodity_detail);
+                            setEditNeedVisible(true)
                           }}
                         >
                           修改需求
@@ -293,6 +299,68 @@ const ListCardList = () => {
             }
           }
         />
+      <ModalForm
+        title="修改需求"
+        visible={editNeedVisible}
+        onVisibleChange={(visible)=>{
+          if(visible){
+            formRef.setFieldsValue({
+              table: commodityInfo.map(item=>(item["key"]=item.id,item))
+            })
+          }
+          setEditNeedVisible(visible)
+        }}
+        onFinish={
+          async (values) => {
+            console.log(values);
+            try {
+              setEditNeedVisible(false);
+            } catch (error) {
+              notification.error({
+                duration: 4,
+                message: '修改需求失败，请刷新重试',
+                content: error.message,
+              })
+            }
+            return true
+          }
+        }
+        form={formRef}
+      >
+      <EditableProTable
+        name="table"
+        headerTitle="购物车"
+        columns={
+        [{
+          title: '名称',
+          dataIndex: 'name',
+          key: 'name'
+          
+        },
+        {
+          title: '图片',
+          dataIndex: 'avatar',
+          key: 'avatar',
+          render: (text, record, index) => (
+            <Image src={text} alt={record.name} height={80}/>
+          )
+        },
+        {
+          title: '单价',
+          dataIndex: 'price',
+          key: 'price'
+        },
+        {
+          title: '购入量',
+          dataIndex: 'number',
+          key: 'number',
+          render: (_, row) => (<InputNumber defaultValue={row.number}></InputNumber>),
+        },
+        ]}
+        recordCreatorProps={false}
+      >
+      </EditableProTable>
+      </ ModalForm>
       </div>
     </PageContainer>
   );
