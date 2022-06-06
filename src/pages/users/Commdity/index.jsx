@@ -1,17 +1,33 @@
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import {
-  DownloadOutlined,
-  EditOutlined,
-  EllipsisOutlined,
-  ShareAltOutlined,
-} from '@ant-design/icons';
-import { Avatar, Card, Col, Dropdown, Form, List, Menu, Row, Select, Tooltip } from 'antd';
+  Avatar,
+  Card,
+  Col,
+  Dropdown,
+  Form,
+  List,
+  Menu,
+  Row,
+  Select,
+  Tooltip,
+  Button,
+  message,
+} from 'antd';
 import numeral from 'numeral';
 import React, { useState } from 'react';
 import { useRequest } from 'umi';
 import StandardFormRow from './components/StandardFormRow';
 import TagSelect from './components/TagSelect';
-import { queryFakeList } from './service';
+import { queryCommodityList, addCommodity } from './service';
 import styles from './style.less';
+import {
+  ModalForm,
+  ProForm,
+  ProFormSelect,
+  ProFormText,
+  ProFormDigit,
+} from '@ant-design/pro-components';
+
 const { Option } = Select;
 
 const formItemLayout = {
@@ -41,9 +57,7 @@ const CardInfo = ({ total, price }) => (
 export const Commdity = () => {
   const { data, loading, run } = useRequest((values) => {
     console.log('form data', values);
-    return queryFakeList({
-      count: 8,
-    });
+    return queryCommodityList({});
   });
   const list1 = data || [];
   const [type, setType] = useState([]);
@@ -58,7 +72,68 @@ export const Commdity = () => {
 
   return (
     <div className={styles.filterCardList}>
-      <Card bordered={false}>
+      <Card
+        bordered={false}
+        extra={
+          <ModalForm
+            title="新建商品"
+            trigger={
+              <Button type="primary">
+                <PlusOutlined />
+                新建商品
+              </Button>
+            }
+            autoFocusFirstInput
+            modalProps={{
+              onCancel: () => console.log('run'),
+            }}
+            onFinish={async (values) => {
+              try {
+                let res = await addCommodity(values);
+                if (res.status === 'success') {
+                  message.success('新建成功');
+                  run();
+                } else {
+                  message.error('新建失败' + res.msg);
+                }
+              } catch (error) {
+                message.error('新建失败');
+              }
+              run();
+              return true;
+            }}
+          >
+            <ProFormText
+              width="md"
+              name="name"
+              label="商品名称"
+              tooltip="请输入商品名称"
+              placeholder="请输入名称"
+            />
+
+            <ProFormText
+              width="md"
+              name="avatar"
+              label="请输入图片URL"
+              placeholder="请输入图片URL"
+            />
+            <ProFormDigit width="md" label="单价" name="price" />
+            <ProFormSelect
+              request={async () =>
+                list1.map((r) => {
+                  return {
+                    value: r.type_id,
+                    label: r.type_name,
+                  };
+                })
+              }
+              width="xs"
+              name="type_id"
+              label="商品种类"
+            />
+          </ModalForm>
+        }
+      >
         <Form
           onValuesChange={(_, values) => {
             const { type } = values;
@@ -97,7 +172,7 @@ export const Commdity = () => {
           xxl: 4,
         }}
         loading={loading}
-        dataSource={list1}
+        dataSource={commodities}
         renderItem={(item) => (
           <List.Item key={item.id}>
             <Card
@@ -106,8 +181,8 @@ export const Commdity = () => {
                 paddingBottom: 20,
               }}
               actions={[
-                <Tooltip key="download" title="下载">
-                  <DownloadOutlined />
+                <Tooltip key="delete" title="删除">
+                  <DeleteOutlined />
                 </Tooltip>,
               ]}
             >
