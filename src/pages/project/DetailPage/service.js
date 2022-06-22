@@ -13,7 +13,7 @@ export async function queryProject(id, options) {
   });
 }
 
-export function EditDetail(id, data, options) {
+export function editDetail(id, data, options) {
   return request('/api/group/edit/' + id, {
     data: data,
     method: 'PUT',
@@ -21,14 +21,14 @@ export function EditDetail(id, data, options) {
   });
 }
 
-export async function DeleteProject(id, options) {
+export async function deleteProject(id, options) {
   return request('/api/group/details/' + id, {
     method: 'DELETE',
     ...(options || {}),
   });
 }
 
-export async function GetCommodityList(options){
+export async function getCommodityList(options){
   return request('/api/commodity/list', {
     method: 'GET',
     ...(options || {}),

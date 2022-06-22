@@ -9,7 +9,7 @@ import ProForm, {
 } from '@ant-design/pro-form';
 import ProTable, { EditableProTable } from '@ant-design/pro-table';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import { SubmitForm, QueryGroupList, QueryCurrent } from './service';
+import { submitForm, queryGroupList, queryCurrent } from './service';
 import { useRequest, history } from 'umi';
 
 import styles from './style.less';
@@ -80,21 +80,14 @@ const Create = () => {
   };
 
   const onFinish = async (values) => {
-    if (userData.length === 0) {
-      message.error({
-        duration: 4,
-        content: '至少选择一名协作者',
-      });
-      return;
-    }
     console.log(values);
     setError([]);
-    let userList = userData.map((r) => {
-      return r.id;
-    });
-    values.userList = userList;
+    // let userList = userData.map((r) => {
+    //   return r.id;
+    // });
+    // values.userList = userList;
     try {
-      let res = await SubmitForm(values);
+      let res = await submitForm(values);
       if (res.status != 'success') {
         notification.error({
           duration: 4,
@@ -106,7 +99,6 @@ const Create = () => {
 
       //submit success
       message.success('提交成功,跳转中');
-      //TODO
       history.push('/project/detail/' + res.data.id);
     } catch (error) {
       notification.error({
@@ -116,33 +108,13 @@ const Create = () => {
       });
     }
   };
-  const { addressList } = {
-    addressList: [
-      {
-        id: 1, //address id
-        lat: 123.111,
-        lng: 39.123,
-        province: '河南省',
-        city: '三门峡市',
-        area: '湖滨区',
-        detail: '六峰路绿江中央广场2号楼3单元109',
-        is_default: true,
-      },
-      {
-        id: 2, //address id
-        lat: 123.111,
-        lng: 39.123,
-        province: '河南省',
-        city: '三门峡市',
-        area: '湖滨区',
-        detail: '六峰路绿江中央广场2号楼3单元109',
-        is_default: false,
-      },
-    ],
-  };
+
+  const { data: User, loading: loadingUsers } = useRequest(() => {
+    return queryCurrent();
+  });
 
   const { data: Groups, loading: loadingGroups } = useRequest(() => {
-    return QueryGroupList();
+    return queryGroupList();
   });
 
   const onFinishFailed = (errorInfo) => {
@@ -283,7 +255,7 @@ const Create = () => {
                   <ProFormSelect
                     label="派送地址"
                     name="address_id"
-                    options={addressList.map((e) => {
+                    options={User.user_address.map((e) => {
                       return {
                         label: [e.province, e.city, e.area, e.detail].join(' '),
                         value: e.id,

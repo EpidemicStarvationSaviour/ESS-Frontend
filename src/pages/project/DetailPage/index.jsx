@@ -37,11 +37,11 @@ import React, { Fragment, useState } from 'react';
 import classNames from 'classnames';
 import { useRequest, useAccess, history } from 'umi';
 import {
-  EditDetail,
-  DeleteProject,
+  editDetail,
+  deleteProject,
   queryProject,
   queryCurrent,
-  GetCommodityList
+  getCommodityList
 } from './service';
 import moment from 'moment';
 import styles from './style.less';
@@ -217,246 +217,97 @@ const DetailPage = (props) => {
       }}
     </RouteContext.Consumer>
   )
-  // const {
-  //   data: currentProject,
-  //   run: runProject,
-  //   loading: loadingProject,
-  // } = useRequest(
-  //   () => {
-  //     return queryProject(props.match.params.id);
-  //   },
-  //   {
-  //     onSuccess: (data, parma) => {
-  //       if (!data) {
-  //         message.error({
-  //           duration: 4,
-  //           content: '获取团体详情失败，请稍后重试',
-  //         });
-  //         return;
-  //       }
-  //       if (data.code === 0) {
-  //         var numbers = new Set()
-  //         data.commodity_detail.forEach(e => {
-  //           e.users.forEach(u => {
-  //             numbers.add({
-  //               key: u.user_id,
-  //               id: u.user_id,
-  //               name: u.user_name,
-  //               phone: u.user_phone
-  //             })
-  //           })
-  //         })
-  //         setGroupNumbers(Array.from(numbers))
-  //         changeProjectStatus(data.type);
-  //       }
-  //     },
-  //     onError: (error, parma) => {
-  //       message.error({
-  //         duration: 4,
-  //         content: '获取团体详情失败，请稍后重试',
-  //       });
-  //     },
-  //   },
-  // );
-  // const { data : addressList} = useRequest(
-  //       () => {
-  //         return queryCurrent().user_address;
-  //       },
-  //       {onSuccess: (data, parma) => {
-  //         if (!data) {
-  //           message.error({
-  //             duration: 4,
-  //             content: '获取个人信息失败，请稍后重试',
-  //           });
-  //           return;
-  //         }
-  //       },
-  //       onError: (error, parma) => {
-  //         message.error({
-  //           duration: 4,
-  //           content: '获取个人信息失败，请稍后重试',
-  //         });
-  //       },
-  //     },
-  //   )
-  // }
-  // const { data : commodity_list} = useRequest(
-  //     () => {
-  //       return GetCommodityList()
-  //     },
-  //     {onSuccess: (data, parma) => {
-  //       if (!data) {
-  //         message.error({
-  //           duration: 4,
-  //           content: '获取商品种类失败，请稍后重试',
-  //         });
-  //         return;
-  //       }
-  //     },
-  //     onError: (error, parma) => {
-  //       message.error({
-  //         duration: 4,
-  //         content: '获取商品种类失败，请稍后重试',
-  //       });
-  //     },
-  //   },
-  // )
-  const commodity_list = [
-    //返回的是表示第一大类的数组
-    {
-        type_id:1,
-        type_name:"水果",
-        type_number: 10, //该大类下有10种商品
-        type_avatar: "https://a.b.c", //大类的图片
-        children:[
-            {
-            id: 1, //这是db的id
-            name: "苹果",
-            avatar:"https://a.b.c",//图片url
-            total: 2000, //数量为斤，是所有商店 全部加起来 整个地区一共有这么多
-            price: 10.1, //单价
-            },
-            {
-             id: 2,
-             name: "香蕉",
-             avatar:"https://a.b.c",//图片url
-             total: 150, 
-             price: 10.1, //单价        
-            }
-        ]
+
+  const {
+    data: currentProject,
+    run: runProject,
+    loading: loadingProject,
+  } = useRequest(
+    () => {
+      return queryProject(props.match.params.id);
     },
     {
-        type_id:2,
-        type_name:"海鲜",
-        type_number: 10, //该大类下有10种商品
-        type_avatar: "https://a.b.c", //大类的图片    
-        children:[
-            {
-            id: 10, //这是db的id
-            avatar:"https://a.b.c",//图片url
-            name: "澳洲龙虾",
-            total: 2000, //数量为斤，是所有商店 全部加起来 整个地区一共有这么多
-            price: 10.1, //单价
-            },
-            {
-             id: 20,
-             name: "美国鱿鱼",
-             avatar:"https://a.b.c",//图片url
-             total: 1000, 
-             price: 10.1, //单价
-            }
-        ]
-    }
-  ]
-
-  const {addressList} = {
-    addressList:[
-      {
-          id: 1, //address id
-          lat: 123.111,
-          lng: 39.123,
-          province:"河南省",
-          city:"三门峡市",
-          area:"湖滨区",
-          detail:"六峰路绿江中央广场2号楼3单元109",
-          is_default: true,
+      onSuccess: (data, parma) => {
+        if (!data) {
+          message.error({
+            duration: 4,
+            content: '获取团体详情失败，请稍后重试',
+          });
+          return;
+        }
+        if (data.code === 0) {
+          var numbers = new Set()
+          data.commodity_detail.forEach(e => {
+            e.users.forEach(u => {
+              numbers.add({
+                key: u.user_id,
+                id: u.user_id,
+                name: u.user_name,
+                phone: u.user_phone
+              })
+            })
+          })
+          setGroupNumbers(Array.from(numbers))
+          changeProjectStatus(data.type);
+        }
       },
-      {
-          id: 2, //address id
-          lat: 123.111,
-          lng: 39.123,
-          province:"河南省",
-          city:"三门峡市",
-          area:"湖滨区",
-          detail:"六峰路绿江中央广场2号楼3单元109",
-          is_default: false,
-      }
-     ]
-  }
-
-const {currentProject, runProject, loadingProject} = {
-    currentProject: {
-      id: 1,
-      name: "32舍鸡蛋冲冲冲",//团的名字
-      type: 1, //订单状态，看上面
-      creator_id: 10,
-      creator_name: "cxz",
-      creator_phone: "13333333333",
-      user_number: 10, //一共多少人参加
-      total_price: 123.6, //总计多少钱
-      description: "截止时间这周五老铁们，开冲", //额外描述，给成员看的
-      remark:"放到门口就行，不用打电话", //给商家和骑手看的备注
-      creator_address: {
-          id: 1, //address的id
-          lat: 123.213,
-          lng: 31.31,
-          province:"河南省",
-          city:"三门峡市",
-          area:"湖滨区",
-          detail:"六峰路绿江中央广场2号楼3单元109"
+      onError: (error, parma) => {
+        message.error({
+          duration: 4,
+          content: '获取团体详情失败，请稍后重试',
+        });
       },
-      commodity_detail:[
-          {
-              type_id: 12,
-              id: 1,
-              name:"苹果",
-              avatar: "https://imgservice.suning.cn/uimg1/b2c/image/YKuZCrn257W0MBexrPNgKg.png_800w_800h_4e",
-              price: 10, //单价
-              total_number: 125.5,// 整个团买了多少斤
-              users: [ //每个人买了多少斤
-                  {
-                      user_id: 1,
-                      user_name: "cxz666",
-                      user_phone: "13333333333",
-                      number: 10, //这个逼买了多少斤
-                  },
-                  {
-                      user_id: 2,
-                      user_name: "cxz6666",
-                      user_phone: "13333333334",
-                      number: 12, //这个逼买了多少斤 
-                  },
-  //如果一个逼没买这个玩意/这个商品他买了0，那就不在这里显示
-              ]
-          },
-          {
-              type_id: 12,
-              id: 2,
-              name:"香蕉",
-              avatar: "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.pddpic.com%2Fmms-material-img%2F2020-06-08%2F29e482ca-6796-450c-b422-13cd9a6f4fd1.jpeg&refer=http%3A%2F%2Fimg.pddpic.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1656593460&t=c3599c4788adf587e6687b1b1783c99e",
-              price: 11, //单价
-              number: 13.5, //我买了多少斤
-              total_number: 135.5,// 整个团买了多少斤
-              users: [ //每个人买了多少斤
-                  {
-                      user_id: 1,
-                      user_name: "cxz666",
-                      user_phone: "13333333333",
-                      number: 10, //这个逼买了多少斤
-                  },
-                  {
-                      user_id: 2,
-                      user_name: "cxz6666",
-                      user_phone: "13333333334",
-                      number: 22, //这个逼买了多少斤 
-                  },
-              ]
-          }
-      ],
-      created_time: 0,
-      updated_time: 0,
-      rider_phone: "13333333333", //骑手手机号，如果还没分配就是空
-      rider_name: "dzp", // 同上
-      rider_pos: { //如果还没分配骑手就是空
-          lat: 123.123,
-          lng: 31.123,
-          update_time: 0,
-          eta: 12.5, //预计送到小区的到达时间，单位为分钟
-    }
-  },
-  runProject: ()=>{},
-  loadingProject: false,
-  }
+    },
+  );
+
+  const { data : addressList, loading: loadingAddressList} = useRequest(
+      () => {
+        return queryCurrent().user_address.map((e) => {
+          return {
+            label: [e.province, e.city, e.area, e.detail].join(' '),
+            value: e.id,
+          };
+        });
+      },
+      {onSuccess: (data, parma) => {
+        if (!data) {
+          message.error({
+            duration: 4,
+            content: '获取个人信息失败，请稍后重试',
+          });
+          return;
+        }
+      },
+      onError: (error, parma) => {
+        message.error({
+          duration: 4,
+          content: '获取个人信息失败，请稍后重试',
+        });
+      },
+    },
+  )
+
+  const { data : commodityList, loading: loadingCommodityList} = useRequest(
+      () => {
+        return getCommodityList()
+      },
+      {onSuccess: (data, parma) => {
+        if (!data) {
+          message.error({
+            duration: 4,
+            content: '获取商品种类失败，请稍后重试',
+          });
+          return;
+        }
+      },
+      onError: (error, parma) => {
+        message.error({
+          duration: 4,
+          content: '获取商品种类失败，请稍后重试',
+        });
+      },
+    },
+  )
 
   const dispatch = (type) => {
     switch (type) {
@@ -705,7 +556,7 @@ const {currentProject, runProject, loadingProject} = {
             }]
           }
           dataSource={
-            commodity_list.map(
+            loadingCommodityList? [] : commodityList.map(
               (e)=>{
                 return {
                   key: e.type_id,
@@ -945,12 +796,9 @@ const {currentProject, runProject, loadingProject} = {
         <ProFormSelect
           label="派送地址"
           name="address_id"
-          options={addressList.map(
-            (e) => {return {
-              label:[e.province, e.city, e.area, e.detail].join(" "), 
-              value: e.id
-            }}
-          )}
+          options={
+            loadingAddressList? [] : addressList
+          }
         >
         </ ProFormSelect>
       </ ModalForm>
