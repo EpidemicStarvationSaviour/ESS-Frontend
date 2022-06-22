@@ -116,30 +116,30 @@ const Create = () => {
       });
     }
   };
-  const {addressList} = {
-    addressList:[
+  const { addressList } = {
+    addressList: [
       {
-          id: 1, //address id
-          lat: 123.111,
-          lng: 39.123,
-          province:"河南省",
-          city:"三门峡市",
-          area:"湖滨区",
-          detail:"六峰路绿江中央广场2号楼3单元109",
-          is_default: true,
+        id: 1, //address id
+        lat: 123.111,
+        lng: 39.123,
+        province: '河南省',
+        city: '三门峡市',
+        area: '湖滨区',
+        detail: '六峰路绿江中央广场2号楼3单元109',
+        is_default: true,
       },
       {
-          id: 2, //address id
-          lat: 123.111,
-          lng: 39.123,
-          province:"河南省",
-          city:"三门峡市",
-          area:"湖滨区",
-          detail:"六峰路绿江中央广场2号楼3单元109",
-          is_default: false,
-      }
-     ]
-  }
+        id: 2, //address id
+        lat: 123.111,
+        lng: 39.123,
+        province: '河南省',
+        city: '三门峡市',
+        area: '湖滨区',
+        detail: '六峰路绿江中央广场2号楼3单元109',
+        is_default: false,
+      },
+    ],
+  };
 
   const { data: Groups, loading: loadingGroups } = useRequest(() => {
     return QueryGroupList();
@@ -180,7 +180,7 @@ const Create = () => {
       },
     },
   ];
-  const loadingAddress = false
+  const loadingAddress = false;
   return (
     <>
       {loadingAddress | loadingGroups ? null : (
@@ -280,17 +280,16 @@ const Create = () => {
                   }}
                   sm={24}
                 >
-                <ProFormSelect
-                  label="派送地址"
-                  name="address_id"
-                  options={addressList.map(
-                    (e) => {return {
-                      label:[e.province, e.city, e.area, e.detail].join(" "), 
-                      value: e.id
-                    }}
-                  )}
-                >
-                </ ProFormSelect>
+                  <ProFormSelect
+                    label="派送地址"
+                    name="address_id"
+                    options={addressList.map((e) => {
+                      return {
+                        label: [e.province, e.city, e.area, e.detail].join(' '),
+                        value: e.id,
+                      };
+                    })}
+                  ></ProFormSelect>
                 </Col>
               </Row>
             </Card>
@@ -314,8 +313,8 @@ const Create = () => {
                     autoClearSearchValue={true}
                     mode="tags"
                     options={
-                      Groups
-                        ? Groups.map((r) => {
+                      Groups.data
+                        ? Groups.data.map((r) => {
                             return {
                               label: r.name,
                               value: JSON.stringify(r),

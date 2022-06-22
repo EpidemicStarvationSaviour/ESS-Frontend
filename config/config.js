@@ -203,6 +203,7 @@ export default defineConfig({
           icon: 'smile',
           path: '/project/create',
           component: './project/Create',
+          access: 'canAgent',
         },
         {
           name: '团体详情',
@@ -216,6 +217,7 @@ export default defineConfig({
           icon: 'smile',
           path: '/project/list',
           component: './project/ListCardList',
+          access: 'canAgent',
         },
       ],
       access: 'canAgent',

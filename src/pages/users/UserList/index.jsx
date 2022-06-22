@@ -46,7 +46,7 @@ const ListContent = ({ data: { user_role, user_phone } }) => (
         <Tag color="blue">居民</Tag>
       ) : user_role == 4 ? (
         <Tag color="green">团长</Tag>
-      ) : user_role == 5 ? (
+      ) : user_role == 6 ? (
         <Tag color="blue">管理员用户</Tag>
       ) : (
         <Tag color="green">未知</Tag>
