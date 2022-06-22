@@ -48,7 +48,7 @@ const PageHeaderContent = ({ currentUser }) => {
           ，祝你满绩每一天！
         </div>
         <div>
-          {currentUser.user_phone} |{'id:' + currentUser.user_id}
+          {currentUser.user_phone} | {'id:' + currentUser.user_id}
         </div>
       </div>
     </div>
@@ -58,16 +58,16 @@ const PageHeaderContent = ({ currentUser }) => {
 const ExtraContent = (props) => (
   <div className={styles.extraContent}>
     <div className={styles.statItem}>
-      <Statistic title="用户总数" value={props.total_users || 0} />
+      <Statistic title="用户总数" value={props.data.total_users || 0} />
     </div>
     <div className={styles.statItem}>
-      <Statistic title="开团数量" value={props.total_groups || 0} />
+      <Statistic title="开团数量" value={props.data.total_groups || 0} />
     </div>
     <div className={styles.statItem}>
-      <Statistic title="上架种类" value={props.total_commodities || 0} />
+      <Statistic title="上架种类" value={props.data.total_commodities || 0} />
     </div>
     <div className={styles.statItem}>
-      <Statistic title="完成订单" value={props.finished_groups || 0} />
+      <Statistic title="完成订单" value={props.data.finished_groups || 0} />
     </div>
   </div>
 );
@@ -176,7 +176,7 @@ const Workplace = () => {
       page_size: 10,
     }),
   );
-  const { loading: workinfoLoading, data: workinfoData } = useRequest(queryWorkinfo);
+  const { loading: workinfoLoading, data: workinfoData = [] } = useRequest(queryWorkinfo);
 
   const { loading: activitiesLoading, data: activities = [] } = queryActivities();
 
@@ -237,7 +237,7 @@ const Workplace = () => {
                   padding: 0,
                 }}
               >
-                {groupList.data.map((item) => {
+                {groupList?.data?.map((item) => {
                   switch (currentUser.user_role) {
                     case 1:
                       return renderGroupList2(item);
@@ -284,7 +284,7 @@ const Workplace = () => {
                   marginBottom: 24,
                 }}
                 bordered={false}
-                title="工作指数（静态数据）"
+                title="疫情指数"
                 loading={data?.radarData?.length === 0}
               >
                 <div className={styles.chart}>

@@ -15,8 +15,6 @@ import { login } from '@/services/ant-design-pro/api';
 import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 import styles from './index.less';
 
-import { generateSvgAvatar } from '../../../utils/avatarGenerator/random';
-
 const LoginMessage = ({ content }) => (
   <Alert
     style={{
@@ -75,7 +73,6 @@ const Login = () => {
       <div className={styles.lang} data-lang>
         {SelectLang && <SelectLang />}
       </div>
-      <Image src={generateSvgAvatar('cxz666')} />
       <div className={styles.content}>
         <LoginForm
           logo={<img alt="logo" src="/logo.svg" />}
@@ -117,7 +114,7 @@ const Login = () => {
           {type === 'phone' && (
             <>
               <ProFormText
-                name="phone"
+                name="account"
                 fieldProps={{
                   size: 'large',
                   prefix: <UserOutlined className={styles.prefixIcon} />,
@@ -131,7 +128,7 @@ const Login = () => {
                 ]}
               />
               <ProFormText.Password
-                name="secret"
+                name="password"
                 fieldProps={{
                   size: 'large',
                   prefix: <LockOutlined className={styles.prefixIcon} />,
@@ -153,7 +150,7 @@ const Login = () => {
           {type === 'name' && (
             <>
               <ProFormText
-                name="name"
+                name="account"
                 fieldProps={{
                   size: 'large',
                   prefix: <UserOutlined className={styles.prefixIcon} />,
@@ -167,7 +164,7 @@ const Login = () => {
                 ]}
               />
               <ProFormText.Password
-                name="secret"
+                name="password"
                 fieldProps={{
                   size: 'large',
                   prefix: <LockOutlined className={styles.prefixIcon} />,

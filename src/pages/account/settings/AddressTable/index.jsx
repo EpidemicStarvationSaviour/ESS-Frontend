@@ -150,8 +150,8 @@ export default () => {
                 province: values.address[0],
                 city: values.address[1],
                 area: values.address[2],
-                details: values.address_detail,
-                is_default: values.is_default,
+                is_default: values.is_default || false,
+                detail: values.address_detail,
               };
               console.log(v);
               return newAddress(v);
@@ -165,6 +165,9 @@ export default () => {
                 message: '创建失败',
                 description: info.msg,
               });
+            })
+            .finally(() => {
+              setVisible(false);
             });
         }}
       >
@@ -199,7 +202,7 @@ export default () => {
             <Input placeholder="详细地址" />
           </Form.Item>
           <Form.Item label="是否设置为默认" name="is_default">
-            <Switch />
+            <Switch defaultChecked={false} />
           </Form.Item>
         </Form>
       </Modal>

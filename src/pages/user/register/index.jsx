@@ -171,7 +171,7 @@ const Register = () => {
       province: values.address[0],
       city: values.address[1],
       area: values.address[2],
-      details: values.address_detail,
+      detail: values.address_detail,
     };
     register(values);
   };
@@ -344,7 +344,7 @@ const Register = () => {
           <Input size="large" type="password" placeholder="确认密码" />
         </Form.Item>
         <Form.Item
-          name="userPhone"
+          name="user_phone"
           label="手机号"
           rules={[
             { required: true, message: '请输入手机号' },

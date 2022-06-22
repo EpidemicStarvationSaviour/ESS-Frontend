@@ -142,19 +142,6 @@ export default defineConfig({
       ],
     },
     {
-      path: '/tag',
-      name: 'Tag页',
-      icon: 'profile',
-      routes: [
-        {
-          name: '标记管理',
-          icon: 'smile',
-          path: '/tag/tag-list',
-          component: './tag/ClassTableList',
-        },
-      ],
-    },
-    {
       path: '/users',
       name: '用户管理',
       icon: 'smile',
@@ -164,14 +151,14 @@ export default defineConfig({
           icon: 'smile',
           path: '/users/user-list',
           component: './users/UserList',
-          // access: 'canSysAdmin',
+          access: 'canSysAdmin',
         },
         {
           name: '商品管理',
           icon: 'smile',
           path: '/users/commodity',
           component: './users/Commdity',
-          // access: 'canSysAdmin',
+          access: 'canSysAdmin',
         },
       ],
     },
@@ -184,6 +171,7 @@ export default defineConfig({
           name: '商品管理',
           icon: 'profile',
           path: '/commodity/commodity',
+          access: 'canSysAdmin',
           component: './commodity/Commodity',
         },
       ],
@@ -204,32 +192,6 @@ export default defineConfig({
     {
       path: '/',
       redirect: '/dashboard/workplace',
-    },
-    {
-      name: '上传管理',
-      icon: 'smile',
-      path: '/upload',
-      routes: [
-        {
-          name: '上传文件',
-          icon: 'smile',
-          path: '/upload/image',
-          component: './upload/Upload',
-        },
-        {
-          name: '图片预览',
-          icon: 'smile',
-          path: '/upload/list',
-          component: './upload/List',
-        },
-        {
-          name: '存储配置',
-          icon: 'smile',
-          path: '/upload/setting',
-          component: './upload/Setting',
-          access: 'canSysAdmin',
-        },
-      ],
     },
     {
       name: '团长管理',

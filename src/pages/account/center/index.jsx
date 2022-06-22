@@ -124,7 +124,7 @@ const TagList = ({ ownGroup }) => {
 
   return (
     <div className={styles.tags}>
-      <div className={styles.tagsTitle}>标签</div>
+      <div className={styles.tagsTitle}>创建的团</div>
       {(ownGroup || []).concat(newTags).map((item) => (
         <Tag key={item.id}>{item.name}</Tag>
       ))}
@@ -166,11 +166,11 @@ const Center = () => {
     // },
   }); //
 
-  const { data: ownGroup, loading: ownGroupLoading } = useRequest(() =>
+  const { data: ownGroup = {}, loading: ownGroupLoading } = useRequest(() =>
     queryOwnGroup({ type: 0, page_num: 1, page_size: 10 }),
   );
 
-  const { data: groupList, loading: groupLoading } = useRequest(() =>
+  const { data: groupList = {}, loading: groupLoading } = useRequest(() =>
     queryGroup({ type: 0, page_num: 1, page_size: 10 }),
   );
   const renderUserInfo = ({ user_id, user_name, user_phone, user_address }) => {
@@ -254,7 +254,7 @@ const Center = () => {
                 </div>
                 {renderUserInfo(currentUser)}
                 <Divider dashed />
-                <TagList ownGroup={ownGroup.data} />
+                <TagList ownGroup={ownGroup?.data || []} />
                 <Divider
                   style={{
                     marginTop: 16,
@@ -265,7 +265,7 @@ const Center = () => {
                   <div className={styles.teamTitle}>参加的团</div>
                   <Row gutter={36}>
                     {groupList &&
-                      groupList.data.map((item) => (
+                      groupList.data?.map((item) => (
                         <Col key={item.id} lg={24} xl={12}>
                           <Link>{item.name}</Link>
                         </Col>
