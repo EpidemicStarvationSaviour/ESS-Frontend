@@ -185,6 +185,7 @@ export default defineConfig({
           name: '订单管理',
           icon: 'profile',
           path: '/order/ListCardList',
+          access: 'canSupplier',
           component: './order/ListCardList',
         },
       ],
@@ -211,6 +212,7 @@ export default defineConfig({
           path: '/project/detail/:id',
           hideInMenu: true,
           component: './project/DetailPage',
+          access: 'canAgent',
         },
         {
           name: '团体列表',
