@@ -15,6 +15,7 @@ import {
 import { useModel } from 'umi';
 import { deleteAddress, newAddress, setDefaultAddress } from './service';
 import { MapOptions } from '../../../../utils/map';
+let current;
 const columns = [
   {
     title: '省份',
@@ -55,7 +56,13 @@ const columns = [
           }}
           onClick={async () => {
             try {
-              let res = await setDefaultAddress(record.id);
+              console.log(current);
+              let res = await setDefaultAddress({
+                user_role: 0,
+                user_phone: '',
+                user_name: '',
+                user_default_address_id: record.id,
+              });
               if (res.status === 'success') {
                 // 刷新页面
                 window.location.reload();
@@ -133,7 +140,7 @@ export default () => {
   } = useModel('@@initialState');
   const [form] = Form.useForm();
   const [visible, setVisible] = useState(false);
-
+  current = currentUser;
   return (
     <>
       <Modal

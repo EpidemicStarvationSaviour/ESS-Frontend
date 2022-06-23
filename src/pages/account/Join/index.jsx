@@ -104,8 +104,11 @@ const TableList = () => {
       valueType: 'dateTime',
       hideInSearch: true,
 
-      render: (dom, _) => {
-        return <span>{moment(parseInt(dom)).format('YYYY-MM-DD HH:mm:ss')}</span>;
+      render: (dom, item) => {
+        console.log(item);
+        return (
+          <span>{moment(parseInt(item.created_time) * 1000).format('YYYY-MM-DD HH:mm:ss')}</span>
+        );
       },
     },
     {
@@ -145,13 +148,24 @@ const TableList = () => {
         }}
         request={async (params, sort, filter) => {
           console.log(params, sort, filter);
+          let group_type = params.type;
+          let value, search_type;
+          if (params.name) {
+            search_type = 0;
+            value = params.name;
+          } else if (params.description) {
+            search_type = 2;
+            value = params.description;
+          } else if (params.creator_name) {
+            search_type = 1;
+            value = params.creator_name;
+          }
           const result = await searchGroup({
             page_size: params.pageSize,
             page_num: params.current,
-            type: params.type,
-            name: params.name,
-            description: params.description,
-            creator_name: params.creator_name,
+            search_type,
+            value,
+            group_type,
           });
           return {
             data: result.data.data,
@@ -230,7 +244,7 @@ const TableList = () => {
             })}
             columns={columns}
           >
-            <ProDescriptions.Item dataIndex="id" />
+            <ProDescriptions.Item dataIndex="id" label="id" />
             <ProDescriptions.Item dataIndex="name" label="名称" valueType="textarea" />
             <ProDescriptions.Item label="参加人数" dataIndex="user_number" valueType="textarea" />
             <ProDescriptions.Item label="总金额" dataIndex="total_price" valueType="textarea" />

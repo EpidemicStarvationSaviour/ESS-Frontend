@@ -171,7 +171,7 @@ export default defineConfig({
           name: '商品管理',
           icon: 'profile',
           path: '/commodity/commodity',
-          access: 'canSysAdmin',
+          access: 'canSupplier',
           component: './commodity/Commodity',
         },
       ],
