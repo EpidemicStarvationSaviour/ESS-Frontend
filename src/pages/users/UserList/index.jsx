@@ -69,11 +69,11 @@ export const UserList = () => {
     run: refreshList,
     loading: listLoading,
     mutate,
-  } = useRequest(() => {
+  } = useRequest((t = 0) => {
     return ListUser({
       page_size: 9999,
       page_num: 1,
-      type: type,
+      type: t,
     });
   });
 
@@ -106,7 +106,7 @@ export const UserList = () => {
           description: '用户已经参与了项目，不可进行删除',
         });
       }
-      await refreshList();
+      await refreshList(type);
       await refreshNum();
     } catch (error) {
       notification.error({
@@ -131,7 +131,7 @@ export const UserList = () => {
         defaultValue={0}
         onChange={(e) => {
           setType(e.target.value);
-          refreshList();
+          refreshList(e.target.value);
         }}
       >
         <RadioButton value={0}>全部</RadioButton>
