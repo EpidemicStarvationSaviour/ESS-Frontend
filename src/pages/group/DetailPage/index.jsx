@@ -92,14 +92,14 @@ const description = (project) => (
           {'纬度: ' + (project?.rider_pos?.lat || 0) + ' 经度: ' + (project?.rider_pos?.lng || 0)}
         </Descriptions.Item>
         <Descriptions.Item label="骑手位置上次更新于">
-          {moment(project?.rider_pos?.update_time).format('llll')}
+          {moment.unix(project?.rider_pos?.update_time).format('llll')}
         </Descriptions.Item>
         <Descriptions.Item label="骑手预计送达时间">{project?.rider_pos?.eta || 0} 分钟</Descriptions.Item>
         <Descriptions.Item label="创建时间">
-          {moment(project?.created_time).format('llll')}
+          {moment.unix(project?.created_time).format('llll')}
         </Descriptions.Item>
         <Descriptions.Item label="更新时间">
-          {moment(project?.updated_time).format('llll')}
+          {moment.unix(project?.updated_time).format('llll')}
         </Descriptions.Item>
       </Descriptions>
     )}
@@ -217,21 +217,19 @@ const DetailPage = (props) => {
           });
           return;
         }
-        if (data.code === 0) {
-          var numbers = new Set()
-          data.commodity_detail.forEach(e => {
-            e.users.forEach(u => {
-              numbers.add({
-                key: u.user_id,
-                id: u.user_id,
-                name: u.user_name,
-                phone: u.user_phone
-              })
+        var numbers = new Set()
+        data.commodity_detail.forEach(e => {
+          e.users.forEach(u => {
+            numbers.add({
+              key: u.user_id,
+              id: u.user_id,
+              name: u.user_name,
+              phone: u.user_phone
             })
           })
-          setGroupNumbers(Array.from(numbers))
-          changeProjectStatus(data.type);
-        }
+        })
+        setGroupNumbers(Array.from(numbers))
+        changeProjectStatus(data.type);
       },
       onError: (error, parma) => {
         message.error({
