@@ -13,8 +13,8 @@ const ListCardList = () => {
       type: 0,
       page_size: 10000,
       page_num: 1,
-    })
-  })
+    });
+  });
 
   const ProjectType = (type) => {
     if (!type) {
@@ -34,7 +34,7 @@ const ListCardList = () => {
     }
   };
   const list = listData?.data || [];
-  const participateNum = listData?.count || 0;;
+  const participateNum = listData?.count || 0;
   const Info = ({ title, value, bordered }) => (
     <div className={styles.headerInfo}>
       <span>{title}</span>
@@ -53,9 +53,7 @@ const ListCardList = () => {
   );
   const content = (
     <div className={styles.pageHeaderContent}>
-      <p>
-        这里是您的订单记录。
-      </p>
+      <p>这里是您的订单记录。</p>
       {loading ? null : DetailNum}
     </div>
   );
@@ -84,97 +82,94 @@ const ListCardList = () => {
             xxl: 4,
           }}
           dataSource={access.canAgent ? [nullData, ...list] : [...list]}
-          renderItem={
-            (item) => {
-              if (item && item.id) {
-                return (
-                  <List.Item key={item.id}>
-                    <Card
-                      hoverable
-                      className={styles.card}
-                      actions={[
-                        <Button
-                          danger={item.type === 1}
-                          key="toDetail"
-                          type="link"
-                          onClick={(e) => {
-                            history.push('/project/detail/' + item.id);
-                          }}
-                        >
-                          查看详情
-                        </Button>,
-                        <Button
-                          key="wait"
-                          type="text"
-                          onClick={(e) => {
-                            message.info('骑手电话: ' + item.courier_phone);
-                          }}
-                        >
-                          联系骑手
-                        </Button>,
-                      ].slice(access.canAgent ? 0 : 1, access.canAgent ? 2 : 3)}
-                    >
-                      <Card.Meta
-                        avatar={
-                          <img
-                            alt=""
-                            className={styles.cardAvatar}
-                            src="https://i.loli.net/2021/10/27/kJWcOx3RA6GwFEV.jpg"
-                          />
-                        }
-                        title={
-                          <>
-                            <a href={'/project/detail/' + item.id}>{item.name} </a>
-                            {'   '}
-                            {ProjectType(item.type)}
-                          </>
-                        }
-                        description={
-                          <>
-                            <div className={styles.cardInfo}>
-                              <div>
-                                <p>骑手</p>
-                                <p>{item.courier_name}</p>
-                              </div>
-                              <div>
-                                <p>到达时间</p>
-                                <p>{item.arrive_time}</p>
-                              </div>
-                            </div>
-                            <Paragraph
-                              className={styles.item}
-                              ellipsis={{
-                                rows: 3,
-                              }}
-                            >
-                              {item.description}
-                            </Paragraph>
-                          </>
-                        }
-                      />
-                    </Card>
-                  </List.Item>
-                );
-              }
-
+          renderItem={(item) => {
+            if (item && item.id) {
               return (
-                <List.Item>
-                  <Button
-                    type="dashed"
-                    className={styles.newButton}
-                    onClick={(e) => {
-                      if (access.canAgent) {
-                        history.push(`/project/create`);
-                        return;
-                      }
-                      message.error('对不起，您没有相应的权限');
-                    }}
+                <List.Item key={item.id}>
+                  <Card
+                    hoverable
+                    className={styles.card}
+                    actions={[
+                      <Button
+                        danger={item.type === 1}
+                        key="toDetail"
+                        type="link"
+                        onClick={(e) => {
+                          history.push('/group/detail/' + item.id);
+                        }}
+                      >
+                        查看详情
+                      </Button>,
+                      <Button
+                        key="wait"
+                        type="text"
+                        onClick={(e) => {
+                          message.info('骑手电话: ' + item.courier_phone);
+                        }}
+                      >
+                        联系骑手
+                      </Button>,
+                    ].slice(access.canAgent ? 0 : 1, access.canAgent ? 2 : 3)}
                   >
-                  </Button>
+                    <Card.Meta
+                      avatar={
+                        <img
+                          alt=""
+                          className={styles.cardAvatar}
+                          src="https://i.loli.net/2021/10/27/kJWcOx3RA6GwFEV.jpg"
+                        />
+                      }
+                      title={
+                        <>
+                          <a href={'/group/detail/' + item.id}>{item.name} </a>
+                          {'   '}
+                          {ProjectType(item.type)}
+                        </>
+                      }
+                      description={
+                        <>
+                          <div className={styles.cardInfo}>
+                            <div>
+                              <p>骑手</p>
+                              <p>{item.courier_name}</p>
+                            </div>
+                            <div>
+                              <p>到达时间</p>
+                              <p>{item.arrive_time}</p>
+                            </div>
+                          </div>
+                          <Paragraph
+                            className={styles.item}
+                            ellipsis={{
+                              rows: 3,
+                            }}
+                          >
+                            {item.description}
+                          </Paragraph>
+                        </>
+                      }
+                    />
+                  </Card>
                 </List.Item>
               );
             }
-          }
+
+            return (
+              <List.Item>
+                <Button
+                  type="dashed"
+                  className={styles.newButton}
+                  onClick={(e) => {
+                    if (access.canAgent) {
+                      history.push(`/project/create`);
+                      return;
+                    }
+                    message.error('对不起，您没有相应的权限');
+                  }}
+                ></Button>
+              </List.Item>
+            );
+          }}
         />
       </div>
     </PageContainer>

@@ -87,16 +87,16 @@ const renderGroupList1 = (item) => (
               size="small"
               src={'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png'}
             />
-            <Link to={'/project/detail/' + item.id}>{item.name}</Link>
+            <Link to={'/group/detail/' + item.id}>{item.name}</Link>
           </div>
         }
         description={item.description}
       />
       <div className={styles.projectItemContent}>
-        <Link to={'/project/detail/' + item.id}>{'参团人数' + item.user_number}</Link>
-        {item.createdTime && (
+        <Link to={'/group/detail/' + item.id}>{'参团人数' + item.user_number}</Link>
+        {item.created_time && (
           <span className={styles.datetime} title={item.createdTime}>
-            {moment(item.created_time).fromNow()}
+            {moment(item.created_time * 1000).fromNow()}
           </span>
         )}
       </div>

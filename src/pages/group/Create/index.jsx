@@ -1,14 +1,7 @@
-import {
-  CloseCircleOutlined,
-  PlusOutlined,
-  MinusOutlined
-} from '@ant-design/icons';
+import { CloseCircleOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { Card, Col, Popover, Row, message, Table, notification, Image, Button } from 'antd';
 import { useState, useRef, useEffect } from 'react';
-import ProForm, {
-  ProFormSelect,
-  ProFormText,
-} from '@ant-design/pro-form';
+import ProForm, { ProFormSelect, ProFormText } from '@ant-design/pro-form';
 import ProTable from '@ant-design/pro-table';
 import { GridContent, PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { submitForm, queryOwn, queryCurrent, queryCommodityList } from './service';
@@ -23,7 +16,6 @@ const fieldLabels = {
   id: '一键导入过往团的成员',
 };
 
-
 const Create = () => {
   const [error, setError] = useState([]);
   const [userData, setUserData] = useState([]);
@@ -31,7 +23,7 @@ const Create = () => {
 
   const { data: commodityList, loading: loadingCommodityList } = useRequest(
     () => {
-      return queryCommodityList()
+      return queryCommodityList();
     },
     {
       onSuccess: (data, parma) => {
@@ -50,7 +42,7 @@ const Create = () => {
         });
       },
     },
-  )
+  );
 
   const commodity = (
     <div className={styles.main}>
@@ -63,89 +55,97 @@ const Create = () => {
           bordered={false}
         >
           <Table
-            columns={
-              [{
+            columns={[
+              {
                 title: '种类',
                 dataIndex: 'type_name',
-                key: 'type_name'
+                key: 'type_name',
               },
               {
                 title: '图片',
                 dataIndex: 'type_avatar',
-                key: 'type_avatar'
-              }]
-            }
+                key: 'type_avatar',
+              },
+            ]}
             dataSource={
-              loadingCommodityList ? [] : commodityList.map(
-                (e) => {
-                  return {
-                    key: e.type_id,
-                    type_name: e.type_name,
-                    type_avatar: <Image src={e.type_avatar} height={80} alt={e.type_name} />,
-                    subcommodity: e.children
-                  }
-                }
-              )
+              loadingCommodityList
+                ? []
+                : commodityList.map((e) => {
+                    return {
+                      key: e.type_id,
+                      type_name: e.type_name,
+                      type_avatar: <Image src={e.type_avatar} height={80} alt={e.type_name} />,
+                      subcommodity: e.children,
+                    };
+                  })
             }
             expandable={{
               defaultExpandAllRows: true,
               expandedRowRender: (record) => (
-                <Table columns={
-                  [{
-                    title: '名称',
-                    dataIndex: 'name',
-                    key: 'name'
-
-                  },
-                  {
-                    title: '图片',
-                    dataIndex: 'avatar',
-                    key: 'avatar',
-                    render: (text, record, index) => (
-                      <Image src={text} alt={record.name} height={80} />
-                    )
-                  },
-                  {
-                    title: '单价',
-                    dataIndex: 'price',
-                    key: 'price'
-                  },
-                  {
-                    title: '库存',
-                    dataIndex: 'total',
-                    key: 'total'
-                  },
-                  {
-                    title: '操作',
-                    key: 'operation',
-                    render: (text, record, index) => (
-                      commidityData.includes(record.id) ?
-                        <Button danger size="large" shape="circle" icon={<MinusOutlined />}
-                          onClick={() => {
-                            var copy = [...commidityData]
-                            copy.splice(commidityData.indexOf(record.id), 1)
-                            setCommidityData(copy)
-                          }}
-                        ></Button> :
-                        <Button type="primary" size="large" shape="circle" icon={<PlusOutlined />}
-                          onClick={() => {
-                            setCommidityData([...commidityData, record.id])
-                          }}
-                        ></Button>
-                    )
-                  },
+                <Table
+                  columns={[
+                    {
+                      title: '名称',
+                      dataIndex: 'name',
+                      key: 'name',
+                    },
+                    {
+                      title: '图片',
+                      dataIndex: 'avatar',
+                      key: 'avatar',
+                      render: (text, record, index) => (
+                        <Image src={text} alt={record.name} height={80} />
+                      ),
+                    },
+                    {
+                      title: '单价',
+                      dataIndex: 'price',
+                      key: 'price',
+                    },
+                    {
+                      title: '库存',
+                      dataIndex: 'total',
+                      key: 'total',
+                    },
+                    {
+                      title: '操作',
+                      key: 'operation',
+                      render: (text, record, index) =>
+                        commidityData.includes(record.id) ? (
+                          <Button
+                            danger
+                            size="large"
+                            shape="circle"
+                            icon={<MinusOutlined />}
+                            onClick={() => {
+                              var copy = [...commidityData];
+                              copy.splice(commidityData.indexOf(record.id), 1);
+                              setCommidityData(copy);
+                            }}
+                          ></Button>
+                        ) : (
+                          <Button
+                            type="primary"
+                            size="large"
+                            shape="circle"
+                            icon={<PlusOutlined />}
+                            onClick={() => {
+                              setCommidityData([...commidityData, record.id]);
+                            }}
+                          ></Button>
+                        ),
+                    },
                   ]}
-                  dataSource={record.subcommodity.map((e) => (e.key = e.id, e))}
+                  dataSource={record.subcommodity.map((e) => ((e.key = e.id), e))}
                   pagination={false}
                 />
-              )
+              ),
             }}
-          >
-          </Table>
+          ></Table>
         </Card>
       </GridContent>
-    </div >
-  )
+    </div>
+  );
 
   useEffect(() => {
     ref.current?.reload();
@@ -210,11 +210,11 @@ const Create = () => {
         duration: 4,
         message: '创建错误, 请至少选择一项商品',
       });
-      return
+      return;
     }
 
     try {
-      values['commodities'] = commidityData
+      values['commodities'] = commidityData;
       let res = await submitForm(values);
       if (res.status != 'success') {
         notification.error({
@@ -227,7 +227,7 @@ const Create = () => {
 
       //submit success
       message.success('提交成功,跳转中');
-      history.push('/project/detail/' + res.data.id);
+      history.push('/group/detail/' + res.data.id);
     } catch (error) {
       notification.error({
         duration: 4,
@@ -383,12 +383,16 @@ const Create = () => {
                   <ProFormSelect
                     label="派送地址"
                     name="address_id"
-                    options={!User ? [] : User.user_address.map((e) => {
-                      return {
-                        label: [e.province, e.city, e.area, e.detail].join(' '),
-                        value: e.id,
-                      };
-                    })}
+                    options={
+                      !User
+                        ? []
+                        : User.user_address.map((e) => {
+                            return {
+                              label: [e.province, e.city, e.area, e.detail].join(' '),
+                              value: e.id,
+                            };
+                          })
+                    }
                   ></ProFormSelect>
                 </Col>
               </Row>
@@ -415,17 +419,17 @@ const Create = () => {
                     options={
                       Groups.data
                         ? Groups.data.map((r) => {
-                          return {
-                            label: r.name,
-                            value: JSON.stringify(r),
-                          };
-                        })
+                            return {
+                              label: r.name,
+                              value: JSON.stringify(r),
+                            };
+                          })
                         : [
-                          {
-                            label: '未找到团体',
-                            value: null,
-                          },
-                        ]
+                            {
+                              label: '未找到团体',
+                              value: null,
+                            },
+                          ]
                     }
                     onChange={(e) => {
                       let t = e.map((r) => {
