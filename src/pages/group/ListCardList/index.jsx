@@ -2,8 +2,8 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Button, Card, List, Typography, Row, Col, message, Tag, Form, Image, InputNumber } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import React, { useState } from 'react';
-import { useRequest, useAccess, Access, history } from 'umi';
-import { queryList } from './service';
+import { useRequest, history } from 'umi';
+import { queryList, queryOwn } from './service';
 import styles from './style.less';
 const { Paragraph } = Typography;
 import {
@@ -12,16 +12,20 @@ import {
 import {
   EditableProTable,
 } from '@ant-design/pro-table';
-const ListCardList = () => {
-  const access = useAccess();
+const ListCardList = (props) => {
   const [editNeedVisible, setEditNeedVisible] = useState(false)
   const [commodityInfo, setCommodityInfo] = useState([])
   const [formRef] = Form.useForm();
   const { data: listData, loading } = useRequest(() => {
-    return queryList({
+    return props.match.path != "/mygroup" ? queryOwn({
+      type: 0,
       page_size: 10000,
       page_num: 1,
-    })
+    }) :
+      queryList({
+        page_size: 10000,
+        page_num: 1,
+      })
   })
 
   const ProjectType = (type) => {
@@ -92,7 +96,7 @@ const ListCardList = () => {
             xl: 4,
             xxl: 4,
           }}
-          dataSource={access.canAgent ? [nullData, ...list] : [...list]}
+          dataSource={props.match.path != "/mygroup" ? [nullData, ...list] : [...list]}
           renderItem={
             (item) => {
               if (item && item.id) {
@@ -107,7 +111,7 @@ const ListCardList = () => {
                           key="toDetail"
                           type="link"
                           onClick={(e) => {
-                            history.push('/project/detail/' + item.id)
+                            history.push('/group/detail/' + item.id)
                           }}
                         >
                           查看详情
@@ -117,10 +121,6 @@ const ListCardList = () => {
                           key="changeNeed"
                           type="link"
                           onClick={(e) => {
-                            if (item.type === 1 && !access.canAgent) {
-                              message.error('该项目暂未开放，请联系团长开放该项目')
-                              return;
-                            }
                             setCommodityInfo(item.commodity_detail);
                             setEditNeedVisible(true)
                           }}
@@ -136,7 +136,7 @@ const ListCardList = () => {
                         >
                           联系团长
                         </Button>,
-                      ].slice(access.canAgent ? 0 : 1, access.canAgent ? 2 : 3)}
+                      ].slice(props.match.path != "/mygroup" ? 0 : 1, props.match.path != "/mygroup" ? 2 : 3)}
                     >
                       <Card.Meta
                         avatar={
@@ -148,7 +148,7 @@ const ListCardList = () => {
                         }
                         title={
                           <>
-                            <a href={'/project/detail/' + item.id}>{item.name} </a>
+                            <a href={'/group/detail/' + item.id}>{item.name} </a>
                             {'   '}
                             {ProjectType(item.type)}
                           </>
@@ -196,7 +196,7 @@ const ListCardList = () => {
                     className={styles.newButton}
                     onClick={(e) => {
                       if (access.canAgent) {
-                        history.push(`/project/create`);
+                        history.push(`/group/create`);
                         return;
                       }
                       message.error('对不起，您没有相应的权限');

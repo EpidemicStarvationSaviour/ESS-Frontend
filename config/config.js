@@ -197,28 +197,28 @@ export default defineConfig({
     {
       name: '团长管理',
       icon: 'smile',
-      path: '/project',
+      path: '/group',
       routes: [
         {
           name: '创建团体',
           icon: 'smile',
-          path: '/project/create',
-          component: './project/Create',
+          path: '/group/create',
+          component: './group/Create',
           access: 'canAgent',
         },
         {
           name: '团体详情',
           icon: 'smile',
-          path: '/project/detail/:id',
+          path: '/group/detail/:id',
           hideInMenu: true,
-          component: './project/DetailPage',
+          component: './group/DetailPage',
           access: 'canAgent',
         },
         {
           name: '团体列表',
           icon: 'smile',
-          path: '/project/list',
-          component: './project/ListCardList',
+          path: '/group/list',
+          component: './group/ListCardList',
           access: 'canAgent',
         },
       ],
@@ -227,8 +227,9 @@ export default defineConfig({
     {
       name: '参与的团',
       icon: 'smile',
-      path: '/group',
-      component: './project/ListCardList',
+      path: '/mygroup',
+      component: './group/ListCardList',
+      access: 'canSeeMygroup',
     },
     {
       component: '404',

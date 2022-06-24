@@ -1,8 +1,20 @@
 import { request } from 'umi';
+
+export async function queryDashBoardGroup(params) {
+  return request('/api/group/list', {
+    method: 'GET',
+    params: {
+      type: 1,
+      page_num: 1,
+      page_size: 10,
+    },
+  });
+}
+
 export async function queryGroup(params) {
   return request('/api/group/list', {
     method: 'GET',
-    data: params,
+    params: params,
   });
 }
 

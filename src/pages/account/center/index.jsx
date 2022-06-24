@@ -9,7 +9,7 @@ import Applications from './components/Applications';
 import { queryCurrent, queryOwnGroup } from './service';
 import styles from './Center.less';
 import { fakeUserNotice } from './_mock.js';
-import { queryList } from '@/pages/project/ListCardList/service';
+import { queryList } from '@/pages/group/ListCardList/service';
 import { queryGroup } from '@/pages/dashboard/workplace/service';
 const fakeTag = [
   {

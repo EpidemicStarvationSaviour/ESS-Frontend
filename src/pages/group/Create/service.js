@@ -12,9 +12,16 @@ export async function queryCurrent() {
   });
 }
 
-export async function queryGroupList(params) {
-  return request('/api/group/list', {
+export async function queryOwn(params) {
+  return request('/api/group/own', {
     method: 'GET',
-    data: params,
+    params: params,
+  });
+}
+
+export async function queryCommodityList(options) {
+  return request('/api/commodity/list', {
+    method: 'GET',
+    ...(options || {}),
   });
 }
