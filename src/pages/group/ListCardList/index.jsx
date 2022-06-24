@@ -17,7 +17,6 @@ const ListCardList = (props) => {
   const [commodityInfo, setCommodityInfo] = useState([])
   const [formRef] = Form.useForm();
   const { data: listData, loading } = useRequest(() => {
-    console.info(props)
     return props.match.path != "/mygroup" ? queryOwn({
       type: 0,
       page_size: 10000,
@@ -122,10 +121,6 @@ const ListCardList = (props) => {
                           key="changeNeed"
                           type="link"
                           onClick={(e) => {
-                            if (item.type === 1) {
-                              message.error('该团购暂未开放，请联系团长开放该团购')
-                              return;
-                            }
                             setCommodityInfo(item.commodity_detail);
                             setEditNeedVisible(true)
                           }}

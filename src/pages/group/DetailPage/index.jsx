@@ -559,7 +559,7 @@ const DetailPage = (props) => {
                     title: '操作',
                     key: 'operation',
                     render: (text, record, index) => (
-                      currentProject.commodity_detail.find(({ id }) => (id == record.id)) ?
+                      currentProject.commodity_detail.find(({ type_id }) => (type_id == record.id)) ?
                         <Button danger size="large" shape="circle" icon={<MinusOutlined />}></Button> :
                         <Button type="primary" size="large" shape="circle" icon={<PlusOutlined />}></Button>
                     )
