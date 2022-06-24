@@ -9,12 +9,12 @@ import { queryGroup, queryActivities, fakeChartData, queryWorkinfo } from './ser
 const links = [
   //TODO FIXME!!
   {
-    title: '创建tag',
-    href: '/tag/tag-list',
+    title: '个人中心',
+    href: '/account/center',
   },
   {
-    title: '上传图片',
-    href: '/upload/image',
+    title: '快速参团',
+    href: '/account/join',
   },
 ];
 
