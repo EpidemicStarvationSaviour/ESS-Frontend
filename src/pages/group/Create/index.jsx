@@ -2,7 +2,6 @@ import { CloseCircleOutlined, PlusOutlined, MinusOutlined } from '@ant-design/ic
 import { Card, Col, Popover, Row, message, Table, notification, Image, Button } from 'antd';
 import { useState, useRef, useEffect } from 'react';
 import ProForm, { ProFormSelect, ProFormText } from '@ant-design/pro-form';
-import ProTable from '@ant-design/pro-table';
 import { GridContent, PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import { submitForm, queryOwn, queryCurrent, queryCommodityList } from './service';
 import { useRequest, history } from 'umi';
@@ -13,12 +12,12 @@ const fieldLabels = {
   description: '详细描述',
   remark: '备注',
   address_id: '派送地址',
-  id: '一键导入过往团的成员',
+  user_group_id: '一键导入过往团的成员',
 };
 
 const Create = () => {
   const [error, setError] = useState([]);
-  const [userData, setUserData] = useState([]);
+  const [userGroup, setUserGroup] = useState(0);
   const [commidityData, setCommidityData] = useState([]);
 
   const { data: commodityList, loading: loadingCommodityList } = useRequest(
@@ -71,13 +70,13 @@ const Create = () => {
               loadingCommodityList
                 ? []
                 : commodityList.map((e) => {
-                    return {
-                      key: e.type_id,
-                      type_name: e.type_name,
-                      type_avatar: <Image src={e.type_avatar} height={80} alt={e.type_name} />,
-                      subcommodity: e.children,
-                    };
-                  })
+                  return {
+                    key: e.type_id,
+                    type_name: e.type_name,
+                    type_avatar: <Image src={e.type_avatar} height={80} alt={e.type_name} />,
+                    subcommodity: e.children,
+                  };
+                })
             }
             expandable={{
               defaultExpandAllRows: true,
@@ -147,9 +146,7 @@ const Create = () => {
     </div>
   );
 
-  useEffect(() => {
-    ref.current?.reload();
-  }, [userData]);
+
   const getErrorInfo = (errors) => {
     const errorCount = errors.filter((item) => item.errors.length > 0).length;
 
@@ -214,8 +211,9 @@ const Create = () => {
     }
 
     try {
-      values['commodities'] = commidityData;
-      let res = await submitForm(values);
+      values['commodities'] = commidityData
+      values['user_group_id'] = userGroup
+      let res = await submitForm(values)
       if (res.status != 'success') {
         notification.error({
           duration: 4,
@@ -249,38 +247,24 @@ const Create = () => {
     setError(errorInfo.errorFields);
   };
 
-  const ref = useRef();
   const columns = [
     {
-      title: '团体名称',
+      title: 'ID',
       dataIndex: 'name',
       key: 'name',
-      width: '25%',
     },
     {
-      title: '创建人',
+      title: '用户名',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '电话',
       dataIndex: 'creator_name',
       key: 'creator_name',
-      width: '40%',
-    },
-    {
-      title: '操作',
-      key: 'action',
-      valueType: 'option',
-      render: (_, record, index, action) => {
-        return [
-          <a
-            key="delete"
-            onClick={() => {
-              setUserData(userData.filter((r) => r.id != record.id));
-            }}
-          >
-            删除
-          </a>,
-        ];
-      },
     },
   ];
+
   return (
     <>
       {loadingUser | loadingGroups ? null : (
@@ -387,17 +371,17 @@ const Create = () => {
                       !User
                         ? []
                         : User.user_address.map((e) => {
-                            return {
-                              label: [e.province, e.city, e.area, e.detail].join(' '),
-                              value: e.id,
-                            };
-                          })
+                          return {
+                            label: [e.province, e.city, e.area, e.detail].join(' '),
+                            value: e.id,
+                          };
+                        })
                     }
                   ></ProFormSelect>
                 </Col>
               </Row>
             </Card>
-            <Card title="成员管理" bordered={false}>
+            <Card title="成员管理" className={styles.card} bordered={false}>
               <Row gutter={16}>
                 <Col
                   xl={{
@@ -412,49 +396,30 @@ const Create = () => {
                   sm={24}
                 >
                   <ProFormSelect
-                    label={fieldLabels.id}
-                    allowClear={true}
-                    autoClearSearchValue={true}
-                    mode="tags"
+                    label={fieldLabels.user_group_id}
                     options={
                       Groups.data
                         ? Groups.data.map((r) => {
-                            return {
-                              label: r.name,
-                              value: JSON.stringify(r),
-                            };
-                          })
+                          return {
+                            label: r.name,
+                            value: r.id,
+                          };
+                        })
                         : [
-                            {
-                              label: '未找到团体',
-                              value: null,
-                            },
-                          ]
+                          {
+                            label: '未找到团体',
+                            value: null,
+                          },
+                        ]
                     }
                     onChange={(e) => {
-                      let t = e.map((r) => {
-                        return JSON.parse(r);
-                      });
-                      setUserData(t);
+                      setUserGroup(e);
                     }}
                   />
                 </Col>
               </Row>
-              <ProTable
-                search={false}
-                request={(params, sorter, filter) => {
-                  // 表单搜索项会从 params 传入，传递给后端接口。
-                  return Promise.resolve({
-                    data: userData,
-                    success: true,
-                  });
-                }}
-                actionRef={ref}
-                columns={columns}
-                rowKey="key"
-              />
             </Card>
-            <Card title="商品管理" bordered={false}>
+            <Card title="商品管理" className={styles.card} bordered={false}>
               {commodity}
             </Card>
           </PageContainer>
