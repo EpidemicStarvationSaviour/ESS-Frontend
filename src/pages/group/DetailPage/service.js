@@ -28,7 +28,7 @@ export async function deleteProject(id, options) {
   });
 }
 
-export async function getCommodityList(options){
+export async function queryCommodityList(options) {
   return request('/api/commodity/list', {
     method: 'GET',
     ...(options || {}),

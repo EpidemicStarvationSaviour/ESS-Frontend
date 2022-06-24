@@ -3,7 +3,7 @@ import { Button, Card, List, Typography, Row, Col, message, Tag, Form, Image, In
 import { PageContainer } from '@ant-design/pro-layout';
 import React, { useState } from 'react';
 import { useRequest, useAccess, Access, history } from 'umi';
-import { queryList } from './service';
+import { queryList, queryOwn } from './service';
 import styles from './style.less';
 const { Paragraph } = Typography;
 import {
@@ -18,10 +18,15 @@ const ListCardList = () => {
   const [commodityInfo, setCommodityInfo] = useState([])
   const [formRef] = Form.useForm();
   const { data: listData, loading } = useRequest(() => {
-    return queryList({
+    return access.canAgent ? queryOwn({
+      type: 0,
       page_size: 10000,
       page_num: 1,
-    })
+    }) :
+      queryList({
+        page_size: 10000,
+        page_num: 1,
+      })
   })
 
   const ProjectType = (type) => {

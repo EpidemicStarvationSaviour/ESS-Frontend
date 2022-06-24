@@ -1,15 +1,17 @@
-import { CloseCircleOutlined } from '@ant-design/icons';
-import { Card, Col, Popover, Row, message, Select, notification } from 'antd';
+import {
+  CloseCircleOutlined,
+  PlusOutlined,
+  MinusOutlined
+} from '@ant-design/icons';
+import { Card, Col, Popover, Row, message, Table, notification, Image, Button } from 'antd';
 import { useState, useRef, useEffect } from 'react';
 import ProForm, {
-  ProFormDateRangePicker,
   ProFormSelect,
   ProFormText,
-  ProFormTimePicker,
 } from '@ant-design/pro-form';
-import ProTable, { EditableProTable } from '@ant-design/pro-table';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import { submitForm, queryGroupList, queryCurrent } from './service';
+import ProTable from '@ant-design/pro-table';
+import { GridContent, PageContainer, FooterToolbar } from '@ant-design/pro-layout';
+import { submitForm, queryOwn, queryCurrent, queryCommodityList } from './service';
 import { useRequest, history } from 'umi';
 
 import styles from './style.less';
@@ -21,9 +23,130 @@ const fieldLabels = {
   id: '一键导入过往团的成员',
 };
 
+
 const Create = () => {
   const [error, setError] = useState([]);
   const [userData, setUserData] = useState([]);
+  const [commidityData, setCommidityData] = useState([]);
+
+  const { data: commodityList, loading: loadingCommodityList } = useRequest(
+    () => {
+      return queryCommodityList()
+    },
+    {
+      onSuccess: (data, parma) => {
+        if (!data) {
+          message.error({
+            duration: 4,
+            content: '获取商品种类失败，请稍后重试',
+          });
+          return;
+        }
+      },
+      onError: (error, parma) => {
+        message.error({
+          duration: 4,
+          content: '获取商品种类失败，请稍后重试',
+        });
+      },
+    },
+  )
+
+  const commodity = (
+    <div className={styles.main}>
+      <GridContent>
+        <Card
+          title="商品种类"
+          style={{
+            marginBottom: 24,
+          }}
+          bordered={false}
+        >
+          <Table
+            columns={
+              [{
+                title: '种类',
+                dataIndex: 'type_name',
+                key: 'type_name'
+              },
+              {
+                title: '图片',
+                dataIndex: 'type_avatar',
+                key: 'type_avatar'
+              }]
+            }
+            dataSource={
+              loadingCommodityList ? [] : commodityList.map(
+                (e) => {
+                  return {
+                    key: e.type_id,
+                    type_name: e.type_name,
+                    type_avatar: <Image src={e.type_avatar} height={80} alt={e.type_name} />,
+                    subcommodity: e.children
+                  }
+                }
+              )
+            }
+            expandable={{
+              defaultExpandAllRows: true,
+              expandedRowRender: (record) => (
+                <Table columns={
+                  [{
+                    title: '名称',
+                    dataIndex: 'name',
+                    key: 'name'
+
+                  },
+                  {
+                    title: '图片',
+                    dataIndex: 'avatar',
+                    key: 'avatar',
+                    render: (text, record, index) => (
+                      <Image src={text} alt={record.name} height={80} />
+                    )
+                  },
+                  {
+                    title: '单价',
+                    dataIndex: 'price',
+                    key: 'price'
+                  },
+                  {
+                    title: '库存',
+                    dataIndex: 'total',
+                    key: 'total'
+                  },
+                  {
+                    title: '操作',
+                    key: 'operation',
+                    render: (text, record, index) => (
+                      commidityData.includes(record.id) ?
+                        <Button danger size="large" shape="circle" icon={<MinusOutlined />}
+                          onClick={() => {
+                            var copy = [...commidityData]
+                            copy.splice(commidityData.indexOf(record.id), 1)
+                            setCommidityData(copy)
+                          }}
+                        ></Button> :
+                        <Button type="primary" size="large" shape="circle" icon={<PlusOutlined />}
+                          onClick={() => {
+                            setCommidityData([...commidityData, record.id])
+                          }}
+                        ></Button>
+                    )
+                  },
+                  ]}
+                  dataSource={record.subcommodity.map((e) => (e.key = e.id, e))}
+                  pagination={false}
+                />
+              )
+            }}
+          >
+          </Table>
+        </Card>
+      </GridContent>
+    </div >
+  )
+
   useEffect(() => {
     ref.current?.reload();
   }, [userData]);
@@ -82,11 +205,16 @@ const Create = () => {
   const onFinish = async (values) => {
     console.log(values);
     setError([]);
-    // let userList = userData.map((r) => {
-    //   return r.id;
-    // });
-    // values.userList = userList;
+    if (commidityData.length == 0) {
+      notification.error({
+        duration: 4,
+        message: '创建错误, 请至少选择一项商品',
+      });
+      return
+    }
+
     try {
+      values['commodities'] = commidityData
       let res = await submitForm(values);
       if (res.status != 'success') {
         notification.error({
@@ -109,17 +237,18 @@ const Create = () => {
     }
   };
 
-  const { data: User, loading: loadingUsers } = useRequest(() => {
+  const { data: User, loading: loadingUser } = useRequest(() => {
     return queryCurrent();
   });
 
   const { data: Groups, loading: loadingGroups } = useRequest(() => {
-    return queryGroupList();
+    return queryOwn();
   });
 
   const onFinishFailed = (errorInfo) => {
     setError(errorInfo.errorFields);
   };
+
   const ref = useRef();
   const columns = [
     {
@@ -152,10 +281,9 @@ const Create = () => {
       },
     },
   ];
-  const loadingAddress = false;
   return (
     <>
-      {loadingAddress | loadingGroups ? null : (
+      {loadingUser | loadingGroups ? null : (
         <ProForm
           layout="vertical"
           hideRequiredMark
@@ -255,7 +383,7 @@ const Create = () => {
                   <ProFormSelect
                     label="派送地址"
                     name="address_id"
-                    options={User.user_address.map((e) => {
+                    options={!User ? [] : User.user_address.map((e) => {
                       return {
                         label: [e.province, e.city, e.area, e.detail].join(' '),
                         value: e.id,
@@ -287,17 +415,17 @@ const Create = () => {
                     options={
                       Groups.data
                         ? Groups.data.map((r) => {
-                            return {
-                              label: r.name,
-                              value: JSON.stringify(r),
-                            };
-                          })
+                          return {
+                            label: r.name,
+                            value: JSON.stringify(r),
+                          };
+                        })
                         : [
-                            {
-                              label: '未找到团体',
-                              value: null,
-                            },
-                          ]
+                          {
+                            label: '未找到团体',
+                            value: null,
+                          },
+                        ]
                     }
                     onChange={(e) => {
                       let t = e.map((r) => {
@@ -321,6 +449,9 @@ const Create = () => {
                 columns={columns}
                 rowKey="key"
               />
+            </Card>
+            <Card title="商品管理" bordered={false}>
+              {commodity}
             </Card>
           </PageContainer>
         </ProForm>
