@@ -18,7 +18,7 @@ import React, { useState } from 'react';
 import { useRequest } from 'umi';
 import StandardFormRow from './components/StandardFormRow';
 import TagSelect from './components/TagSelect';
-import { queryCommodityList, addCommodity } from './service';
+import { queryCommodityList, addCommodity, deleteCommodity } from './service';
 import styles from './style.less';
 import {
   ModalForm,
@@ -182,7 +182,22 @@ export const Commdity = () => {
               }}
               actions={[
                 <Tooltip key="delete" title="删除">
-                  <DeleteOutlined />
+                  <DeleteOutlined
+                    onClick={async (values) => {
+                      try {
+                        let res = await deleteCommodity(item.id);
+                        if (res.status === 'success') {
+                          message.success('删除成功');
+                          run();
+                        } else {
+                          message.error('删除失败' + res.msg);
+                        }
+                      } catch (error) {
+                        message.error('删除失败');
+                      }
+                      run();
+                    }}
+                  />
                 </Tooltip>,
               ]}
             >
