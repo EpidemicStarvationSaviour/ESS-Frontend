@@ -558,8 +558,25 @@ const DetailPage = (props) => {
                     key: 'operation',
                     render: (text, record, index) => (
                       currentProject.commodity_detail.find(({ type_id }) => (type_id == record.id)) ?
-                        <Button danger size="large" shape="circle" icon={<MinusOutlined />}></Button> :
-                        <Button type="primary" size="large" shape="circle" icon={<PlusOutlined />}></Button>
+                        <Button danger size="large" shape="circle" icon={<MinusOutlined />}
+                          onClick={async () => {
+                            var tmp = []
+                            currentProject.commodity_detail.forEach(element => {
+                              if (element.type_id != record.id) {
+                                tmp.push(element.type_id)
+                              }
+                            });
+                            await editDetail(currentProject.id, { commodities: tmp })
+                            runProject()
+                          }
+                          }
+                        ></Button> :
+                        <Button type="primary" size="large" shape="circle" icon={<PlusOutlined />}
+                          onClick={async () => {
+                            await editDetail(currentProject.id, { commodities: [...currentProject.commodity_detail.map(e => e.type_id), record.id] })
+                            runProject()
+                          }}
+                        ></Button>
                     )
                   },
                   ]}
@@ -572,7 +589,7 @@ const DetailPage = (props) => {
           </Table>
         </Card>
       </GridContent>
-    </div>
+    </div >
   )
 
   const purchaser = (
@@ -606,7 +623,13 @@ const DetailPage = (props) => {
                 title: '操作',
                 key: 'operation',
                 render: (text, record, index) => (
-                  <Button danger size="large">移除</Button>
+                  <Button danger size="large"
+                    onClick={async () => {
+                      await editDetail(currentProject.id, { deleted_users: [record.id] })
+                      runProject()
+                    }}>
+                    移除
+                  </Button>
                 )
               }
               ]
