@@ -1,5 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Card, List, Typography, Row, Col, message, Tag, Form, Image, InputNumber} from 'antd';
+import { Button, Card, List, Typography, Row, Col, message, Tag, Form, Image, InputNumber } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import React, { useState } from 'react';
 import { useRequest, useAccess, Access, history } from 'umi';
@@ -18,103 +18,12 @@ const ListCardList = () => {
   const [commodityInfo, setCommodityInfo] = useState([])
   const [formRef] = Form.useForm();
   const { data: listData, loading } = useRequest(() => {
-      return queryList({
-          pageSize: 10000,
-          current: 0,
-        })
+    return queryList({
+      page_size: 10000,
+      page_num: 1,
+    })
   })
-  // const { data: listData, loading } = {
-  //     data:{
-  //       count:10,
-  //       data:[
-  //           {
-  //               id: 1, //团的id
-  //               name: "32舍鸡蛋冲冲冲",//团的名字
-  //               type: 1, //订单状态，看上面
-  //               creator_id: 10,
-  //               creator_name: "cxz",
-  //               creator_phone: "13333333333",
-  //               creator_address: {
-  //                   id: 1, //address的id
-  //                   lat: 123.213,
-  //                   lng: 31.31,
-  //                   province:"河南省",
-  //                   city:"三门峡市",
-  //                   area:"湖滨区",
-  //                   detail:"六峰路绿江中央广场2号楼3单元109"
-  //               },
-  //               user_number: 10, //一共多少人参加
-  //               total_price: 123.6, //总计多少钱
-  //               total_my_price: 12, //我要付多少钱
-  //               commodity_detail:[
-  //                   {
-  //                       type_id: 12,
-  //                       id: 10,
-  //                       name:"苹果",
-  //                       avatar: "https://imgservice.suning.cn/uimg1/b2c/image/YKuZCrn257W0MBexrPNgKg.png_800w_800h_4e",
-  //                       price: 10, //单价
-  //                       number: 12.5, //我买了多少斤
-  //                       total_number: 125.5,// 整个团买了多少斤
-  //                   },
-  //                   {
-  //                       type_id: 12,
-  //                       id: 11,
-  //                       name:"香蕉",
-  //                       avatar: "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.pddpic.com%2Fmms-material-img%2F2020-06-08%2F29e482ca-6796-450c-b422-13cd9a6f4fd1.jpeg&refer=http%3A%2F%2Fimg.pddpic.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1656593460&t=c3599c4788adf587e6687b1b1783c99e",
-  //                       price: 11, //单价
-  //                       number: 13.5, //我买了多少斤
-  //                       total_number: 135.5,// 整个团买了多少斤
-  //                   }
-  //               ],
-  //               description: "截止时间这周五老铁们，开冲", //额外描述，给成员看的
-  //               remark:"放到门口就行，不用打电话", //给商家和骑手看的备注
-  //           },
-  //           {
-  //               id: 2, //团的id
-  //               name: "31舍啥都买啊冲冲冲",//团的名字
-  //               type: 2, //订单状态，看上面
-  //               creator_id: 12,
-  //               creator_name: "ccc",
-  //               creator_phone: "14444444444",
-  //               creator_address: {
-  //                   id: 1, //address的id
-  //                   lat: 123.213,
-  //                   lng: 31.31,
-  //                   province:"河南省",
-  //                   city:"三门峡市",
-  //                   area:"湖滨区",
-  //                   detail:"六峰路绿江中央广场2号楼3单元109"
-  //               },
-  //               user_number: 10, //一共多少人参加
-  //               total_price: 123.6, //总计多少钱
-  //               total_my_price: 12, //我要付多少钱
-  //               commodity_detail:[
-  //                   {
-  //                       type_id: 12,
-  //                       id: 10,
-  //                       name:"苹果",
-  //                       avatar: "https://imgservice.suning.cn/uimg1/b2c/image/YKuZCrn257W0MBexrPNgKg.png_800w_800h_4e",
-  //                       price: 10, //单价
-  //                       number: 12.5, //我买了多少斤
-  //                       total_number: 125.5,// 整个团买了多少斤
-  //                   },
-  //                   {
-  //                       type_id: 12,
-  //                       id: 11,
-  //                       name:"香蕉",
-  //                       avatar: "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.pddpic.com%2Fmms-material-img%2F2020-06-08%2F29e482ca-6796-450c-b422-13cd9a6f4fd1.jpeg&refer=http%3A%2F%2Fimg.pddpic.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1656593460&t=c3599c4788adf587e6687b1b1783c99e",
-  //                       price: 11, //单价
-  //                       number: 13.5, //我买了多少斤
-  //                       total_number: 135.5,// 整个团买了多少斤
-  //                   }
-  //               ],
-  //               description: "截止时间这周五老铁们，开冲", //额外描述，给成员看的
-  //               remark:"放到门口就行，不用打电话", //给商家和骑手看的备注            
-  //           }
-  //       ]
-  //   },
-  //   loading: false
-  // }
+
   const ProjectType = (type) => {
     if (!type) {
       return <Tag color="red">未知类型</Tag>;
@@ -132,6 +41,7 @@ const ListCardList = () => {
         return <Tag color="blue">未使用</Tag>;
     }
   };
+
   const list = listData?.data || [];
   const participateNum = listData?.count || 0;;
   const Info = ({ title, value, bordered }) => (
@@ -182,7 +92,7 @@ const ListCardList = () => {
             xl: 4,
             xxl: 4,
           }}
-          dataSource={access.canAgent ? [nullData, ...list]:[...list]}
+          dataSource={access.canAgent ? [nullData, ...list] : [...list]}
           renderItem={
             (item) => {
               if (item && item.id) {
@@ -299,68 +209,68 @@ const ListCardList = () => {
             }
           }
         />
-      <ModalForm
-        title="修改需求"
-        visible={editNeedVisible}
-        onVisibleChange={(visible)=>{
-          if(visible){
-            formRef.setFieldsValue({
-              table: commodityInfo.map(item=>(item["key"]=item.id,item))
-            })
-          }
-          setEditNeedVisible(visible)
-        }}
-        onFinish={
-          async (values) => {
-            console.log(values);
-            try {
-              setEditNeedVisible(false);
-            } catch (error) {
-              notification.error({
-                duration: 4,
-                message: '修改需求失败，请刷新重试',
-                content: error.message,
+        <ModalForm
+          title="修改需求"
+          visible={editNeedVisible}
+          onVisibleChange={(visible) => {
+            if (visible) {
+              formRef.setFieldsValue({
+                table: commodityInfo.map(item => (item["key"] = item.id, item))
               })
             }
-            return true
+            setEditNeedVisible(visible)
+          }}
+          onFinish={
+            async (values) => {
+              console.log(values);
+              try {
+                setEditNeedVisible(false);
+              } catch (error) {
+                notification.error({
+                  duration: 4,
+                  message: '修改需求失败，请刷新重试',
+                  content: error.message,
+                })
+              }
+              return true
+            }
           }
-        }
-        form={formRef}
-      >
-      <EditableProTable
-        name="table"
-        headerTitle="购物车"
-        columns={
-        [{
-          title: '名称',
-          dataIndex: 'name',
-          key: 'name'
-          
-        },
-        {
-          title: '图片',
-          dataIndex: 'avatar',
-          key: 'avatar',
-          render: (text, record, index) => (
-            <Image src={text} alt={record.name} height={80}/>
-          )
-        },
-        {
-          title: '单价',
-          dataIndex: 'price',
-          key: 'price'
-        },
-        {
-          title: '购入量',
-          dataIndex: 'number',
-          key: 'number',
-          render: (_, row) => (<InputNumber defaultValue={row.number}></InputNumber>),
-        },
-        ]}
-        recordCreatorProps={false}
-      >
-      </EditableProTable>
-      </ ModalForm>
+          form={formRef}
+        >
+          <EditableProTable
+            name="table"
+            headerTitle="购物车"
+            columns={
+              [{
+                title: '名称',
+                dataIndex: 'name',
+                key: 'name'
+
+              },
+              {
+                title: '图片',
+                dataIndex: 'avatar',
+                key: 'avatar',
+                render: (text, record, index) => (
+                  <Image src={text} alt={record.name} height={80} />
+                )
+              },
+              {
+                title: '单价',
+                dataIndex: 'price',
+                key: 'price'
+              },
+              {
+                title: '购入量',
+                dataIndex: 'number',
+                key: 'number',
+                render: (_, row) => (<InputNumber defaultValue={row.number}></InputNumber>),
+              },
+              ]}
+            recordCreatorProps={false}
+          >
+          </EditableProTable>
+        </ ModalForm>
       </div>
     </PageContainer>
   );

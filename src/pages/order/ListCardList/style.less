@@ -6,19 +6,22 @@
     :global {
       .ant-card-meta-title {
         margin-bottom: 12px;
-        & > a {
+
+        &>a {
           display: inline-block;
           max-width: 100%;
           color: @heading-color;
         }
       }
+
       .ant-card-body:hover {
-        .ant-card-meta-title > a {
+        .ant-card-meta-title>a {
           color: @primary-color;
         }
       }
     }
   }
+
   .item {
     margin-top: 10px;
     height: 64px;
@@ -34,27 +37,32 @@
     margin-top: 8px;
     margin-left: 40px;
     zoom: 1;
+
     &::before,
     &::after {
       display: table;
       content: ' ';
     }
+
     &::after {
       clear: both;
       height: 0;
       font-size: 0;
       visibility: hidden;
     }
-    & > div {
+
+    &>div {
       position: relative;
       float: left;
-      width: 25%;
+      width: 50%;
       text-align: left;
+
       p {
         margin: 0;
         font-size: 24px;
         line-height: 32px;
       }
+
       p:first-child {
         margin-bottom: 4px;
         color: @text-color-secondary;
@@ -70,6 +78,7 @@
   width: 155px;
   margin-top: -20px;
   text-align: center;
+
   img {
     width: 100%;
   }
@@ -95,24 +104,27 @@
 
 .pageHeaderContent {
   position: relative;
-  
+
   .headerInfo {
     position: relative;
     text-align: center;
-    & > span {
+
+    &>span {
       display: inline-block;
       margin-bottom: 4px;
       color: @text-color-secondary;
       font-size: @font-size-base;
       line-height: 22px;
     }
-    & > p {
+
+    &>p {
       margin: 0;
       color: @heading-color;
       font-size: 24px;
       line-height: 32px;
     }
-    & > em {
+
+    &>em {
       position: absolute;
       top: 0;
       right: 0;
@@ -125,12 +137,15 @@
 
 .contentLink {
   margin-top: 16px;
+
   a {
     margin-right: 32px;
+
     img {
       width: 24px;
     }
   }
+
   img {
     margin-right: 8px;
     vertical-align: middle;
@@ -144,6 +159,7 @@
     }
   }
 }
+
 @media screen and (max-width: @screen-md) {
   .extraImg {
     display: none;
@@ -154,14 +170,17 @@
   .pageHeaderContent {
     padding-bottom: 30px;
   }
+
   .contentLink {
     position: absolute;
     bottom: -4px;
     left: 0;
     width: 1000px;
+
     a {
       margin-right: 16px;
     }
+
     img {
       margin-right: 4px;
     }

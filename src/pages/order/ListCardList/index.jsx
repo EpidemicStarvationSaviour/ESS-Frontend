@@ -2,115 +2,20 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Button, Card, List, Typography, Row, Col, message, Tag } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import { useRequest, useAccess, Access, history } from 'umi';
-import { queryList, queryOwn } from './service';
+import { queryList } from './service';
 import styles from './style.less';
 const { Paragraph } = Typography;
 
 const ListCardList = () => {
   const access = useAccess();
-  // const { data: listData, loading } = useRequest(() => {
-  //     return access.canAgent?
-  //       queryOwn({
-  //         pageSize: 10000,
-  //         current: 0,
-  //       }):
-  //       queryList({
-  //         pageSize: 10000,
-  //         current: 0,
-  //       })
-  // })
-  const { data: listData, loading } = {
-      data:{
-        count:10,
-        data:[
-            {
-                id: 1, //团的id
-                name: "32舍鸡蛋冲冲冲",//团的名字
-                type: 1, //订单状态，看上面
-                creator_id: 10,
-                courier_name: "cxz",
-                courier_phone: "13333333333",
-                creator_address: {
-                    id: 1, //address的id
-                    lat: 123.213,
-                    lng: 31.31,
-                    province:"河南省",
-                    city:"三门峡市",
-                    area:"湖滨区",
-                    detail:"六峰路绿江中央广场2号楼3单元109"
-                },
-                user_number: 10, //一共多少人参加
-                total_price: 123.6, //总计多少钱
-                arrive_time: 12, //我要付多少钱
-                commodity_detail:[
-                    {
-                        type_id: 12,
-                        id: 10,
-                        name:"苹果",
-                        avatar: "https://sdf.sdf",
-                        price: 10, //单价
-                        number: 12.5, //我买了多少斤
-                        total_number: 125.5,// 整个团买了多少斤
-                    },
-                    {
-                        type_id: 12,
-                        id: 11,
-                        name:"香蕉",
-                        avatar: "https://sdf.sdf",
-                        price: 11, //单价
-                        number: 13.5, //我买了多少斤
-                        total_number: 135.5,// 整个团买了多少斤
-                    }
-                ],
-                description: "截止时间这周五老铁们，开冲", //额外描述，给成员看的
-                remark:"放到门口就行，不用打电话", //给商家和骑手看的备注
-            },
-            {
-                id: 2, //团的id
-                name: "31舍啥都买啊冲冲冲",//团的名字
-                type: 2, //订单状态，看上面
-                creator_id: 12,
-                courier_name: "ccc",
-                courier_phone: "14444444444",
-                creator_address: {
-                    id: 1, //address的id
-                    lat: 123.213,
-                    lng: 31.31,
-                    province:"河南省",
-                    city:"三门峡市",
-                    area:"湖滨区",
-                    detail:"六峰路绿江中央广场2号楼3单元109"
-                },
-                user_number: 10, //一共多少人参加
-                total_price: 123.6, //总计多少钱
-                arrive_time: 12, //我要付多少钱
-                commodity_detail:[
-                    {
-                        type_id: 12,
-                        id: 10,
-                        name:"苹果",
-                        avatar: "https://sdf.sdf",
-                        price: 10, //单价
-                        number: 12.5, //我买了多少斤
-                        total_number: 125.5,// 整个团买了多少斤
-                    },
-                    {
-                        type_id: 12,
-                        id: 11,
-                        name:"香蕉",
-                        avatar: "https://sdf.sdf",
-                        price: 11, //单价
-                        number: 13.5, //我买了多少斤
-                        total_number: 135.5,// 整个团买了多少斤
-                    }
-                ],
-                description: "截止时间这周五老铁们，开冲", //额外描述，给成员看的
-                remark:"放到门口就行，不用打电话", //给商家和骑手看的备注            
-            }
-        ]
-    },
-    loading: false
-  }
+  const { data: listData, loading } = useRequest(() => {
+    queryList({
+      type: 0,
+      page_size: 10000,
+      page_num: 1,
+    })
+  })
+
   const ProjectType = (type) => {
     if (!type) {
       return <Tag color="red">未知类型</Tag>;
@@ -178,7 +83,7 @@ const ListCardList = () => {
             xl: 4,
             xxl: 4,
           }}
-          dataSource={access.canAgent ? [nullData, ...list]:[...list]}
+          dataSource={access.canAgent ? [nullData, ...list] : [...list]}
           renderItem={
             (item) => {
               if (item && item.id) {
