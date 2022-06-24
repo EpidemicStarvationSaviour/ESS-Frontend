@@ -5,7 +5,7 @@ import { PageContainer } from '@ant-design/pro-layout';
 import moment from 'moment';
 import EditableLinkGroup from './components/EditableLinkGroup';
 import styles from './style.less';
-import { queryGroup, queryActivities, fakeChartData, queryWorkinfo } from './service';
+import { queryActivities, fakeChartData, queryWorkinfo, queryDashBoardGroup } from './service';
 const links = [
   //TODO FIXME!!
   {
@@ -87,16 +87,16 @@ const renderGroupList1 = (item) => (
               size="small"
               src={'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png'}
             />
-            <Link to={'/project/detail/' + item.id}>{item.name}</Link>
+            <Link to={'/group/detail/' + item.id}>{item.name}</Link>
           </div>
         }
         description={item.description}
       />
       <div className={styles.projectItemContent}>
-        <Link to={'/project/detail/' + item.id}>{'参团人数' + item.user_number}</Link>
-        {item.createdTime && (
+        <Link to={'/group/detail/' + item.id}>{'参团人数' + item.user_number}</Link>
+        {item.created_time && (
           <span className={styles.datetime} title={item.createdTime}>
-            {moment(item.created_time).fromNow()}
+            {moment(item.created_time * 1000).fromNow()}
           </span>
         )}
       </div>
@@ -169,13 +169,7 @@ const Workplace = () => {
     setInitialState,
   } = useModel('@@initialState');
 
-  const { loading: groupLoading, data: groupList = {} } = useRequest(() =>
-    queryGroup({
-      type: 1,
-      page_num: 1,
-      page_size: 10,
-    }),
-  );
+  const { loading: groupLoading, data: groupList = {} } = useRequest(queryDashBoardGroup);
   const { loading: workinfoLoading, data: workinfoData = [] } = useRequest(queryWorkinfo);
 
   const { loading: activitiesLoading, data: activities = [] } = queryActivities();
@@ -231,7 +225,7 @@ const Workplace = () => {
                 title="进行中的团购"
                 bordered={false}
                 //TODO FIXME!
-                extra={<Link to="/project/list">全部项目</Link>}
+                extra={<Link to="/mygroup">全部项目</Link>}
                 loading={groupLoading}
                 bodyStyle={{
                   padding: 0,

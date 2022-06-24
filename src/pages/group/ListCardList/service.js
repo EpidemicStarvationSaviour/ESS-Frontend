@@ -8,6 +8,6 @@ export async function queryList(params) {
 export async function queryOwn(params) {
   return request('/api/group/own', {
     method: 'GET',
-    data: params,
+    params: params,
   });
 }
