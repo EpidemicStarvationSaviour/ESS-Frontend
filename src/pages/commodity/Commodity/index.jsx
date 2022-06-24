@@ -1,17 +1,33 @@
+import { EditOutlined } from '@ant-design/icons';
 import {
-  DownloadOutlined,
-  EditOutlined,
-  EllipsisOutlined,
-  ShareAltOutlined,
-} from '@ant-design/icons';
-import { Avatar, Card, Col, Dropdown, Form, List, Menu, Row, Select, Tooltip } from 'antd';
+  Avatar,
+  Card,
+  Col,
+  Dropdown,
+  Form,
+  List,
+  Menu,
+  Row,
+  Select,
+  Tooltip,
+  Button,
+  message,
+} from 'antd';
 import numeral from 'numeral';
 import React, { useState } from 'react';
 import { useRequest } from 'umi';
 import StandardFormRow from './components/StandardFormRow';
 import TagSelect from './components/TagSelect';
-import { queryList } from './service';
+import { queryCommodityList, myCommodityList, restockCommodity } from './service';
 import styles from './style.less';
+import {
+  ModalForm,
+  ProForm,
+  ProFormSelect,
+  ProFormText,
+  ProFormDigit,
+} from '@ant-design/pro-components';
+
 const { Option } = Select;
 
 const formItemLayout = {
@@ -28,7 +44,7 @@ const formItemLayout = {
 const CardInfo = ({ total, price }) => (
   <div className={styles.cardInfo}>
     <div>
-      <p>商品总量</p>
+      <p>商品库存</p>
       <p>{total}</p>
     </div>
     <div>
@@ -38,12 +54,12 @@ const CardInfo = ({ total, price }) => (
   </div>
 );
 
-export const Commdity = () => {
+export const Commodity = () => {
+  const [modalVisit, setModalVisit] = useState(false);
+  const [id, setId] = useState(0)
   const { data, loading, run } = useRequest((values) => {
     console.log('form data', values);
-    return queryList({
-      count: 8,
-    });
+    return myCommodityList({});
   });
   const list1 = data || [];
   const [type, setType] = useState([]);
@@ -58,7 +74,37 @@ export const Commdity = () => {
 
   return (
     <div className={styles.filterCardList}>
-      <Card bordered={false}>
+      <ModalForm
+        title="修改数量"
+        visible={modalVisit}
+        onVisibleChange={setModalVisit}
+        autoFocusFirstInput
+        modalProps={{
+          onCancel: () => console.log('run'),
+        }}
+        onFinish={async (values) => {
+          try {
+            values={
+              id: {id}.id,
+              number: values.number
+            }
+            let res = await restockCommodity(values);
+            if (res.status === 'success') {
+              message.success('修改成功');
+              run();
+            } else {
+              message.error('修改失败' + res.msg);
+            }
+          } catch (error) {
+            message.error('修改失败');
+          }
+          run();
+          return true;
+        }}
+      >
+        <ProFormDigit width="md" label="数量" name="number" />
+      </ModalForm>
+      <Card bordered={false} >
         <Form
           onValuesChange={(_, values) => {
             const { type } = values;
@@ -97,7 +143,7 @@ export const Commdity = () => {
           xxl: 4,
         }}
         loading={loading}
-        dataSource={list1}
+        dataSource={commodities}
         renderItem={(item) => (
           <List.Item key={item.id}>
             <Card
@@ -106,8 +152,13 @@ export const Commdity = () => {
                 paddingBottom: 20,
               }}
               actions={[
-                <Tooltip key="download" title="下载">
-                  <DownloadOutlined />
+                <Tooltip key="edit" title="修改">
+                  <EditOutlined
+                    onClick={() =>{
+                      setModalVisit(true);
+                      setId(item.id);
+                    }}
+                  />
                 </Tooltip>,
               ]}
             >
@@ -122,4 +173,4 @@ export const Commdity = () => {
     </div>
   );
 };
-export default Commdity;
+export default Commodity;
