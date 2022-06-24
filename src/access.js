@@ -16,5 +16,7 @@ export default function access(initialState) {
     canPurchaser: currentUser && currentUser.user_role === Purchaser, // 是否是居民
     canAgent: currentUser && currentUser.user_role === Agent, // 是否是团长
     canSysAdmin: currentUser && currentUser.user_role === SysAdmin, // 是否是系统管理员
+    canSeeMygroup:
+      currentUser && (currentUser.user_role === Agent || currentUser.user_role === Purchaser), // 是否可以查看 参与的团
   };
 }

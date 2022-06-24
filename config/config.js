@@ -229,7 +229,7 @@ export default defineConfig({
       icon: 'smile',
       path: '/mygroup',
       component: './group/ListCardList',
-      
+      access: 'canSeeMygroup',
     },
     {
       component: '404',
