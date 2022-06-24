@@ -93,10 +93,11 @@ const renderGroupList1 = (item) => (
         description={item.description}
       />
       <div className={styles.projectItemContent}>
-        <Link to={'/group/detail/' + item.id}>{'参团人数' + item.user_number}</Link>
+        <Link to={'/group/detail/' + item.id}>{'参团人数：' + item.user_number}</Link>
+        <br />
         {item.created_time && (
-          <span className={styles.datetime} title={item.createdTime}>
-            {moment(item.created_time * 1000).fromNow()}
+          <span style={{ paddingLeft: 10 }} className={styles.datetime} title={item.createdTime}>
+            {' ' + moment(item.created_time * 1000).fromNow()}
           </span>
         )}
       </div>

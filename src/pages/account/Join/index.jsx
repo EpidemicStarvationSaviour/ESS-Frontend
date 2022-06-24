@@ -202,28 +202,26 @@ const TableList = () => {
           }
         }}
       >
-        {currentRow?.commodity_detail.map((r) => {
-          return (
-            <Form.Item
-              key={r.id}
-              name={r.id}
-              label={r.name}
-              tooltip={
-                '单价：' +
-                item.price +
-                '元\n' +
-                '我已购买：' +
-                item.number +
-                '斤\n' +
-                '整个团购买' +
-                item.total_number +
-                '斤'
-              }
-            >
-              <InputNumber />
-            </Form.Item>
-          );
-        })}
+        {currentRow?.commodity_detail.map((r) => (
+          <Form.Item
+            key={r.id}
+            name={r.id}
+            label={r.name + ' ' + r.price + '元'}
+            tooltip={
+              '单价：' +
+              r.price +
+              '元\n' +
+              '我已购买：' +
+              r.number +
+              '斤\n' +
+              '整个团购买' +
+              r.total_number +
+              '斤'
+            }
+          >
+            <InputNumber key={1000 + r.id} />
+          </Form.Item>
+        ))}
       </ModalForm>
 
       <Drawer
@@ -236,44 +234,45 @@ const TableList = () => {
         closable={false}
       >
         {currentRow?.name && (
-          <ProDescriptions
-            column={1}
-            title={currentRow?.name}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            columns={columns}
-          >
-            <ProDescriptions.Item dataIndex="id" label="id" />
-            <ProDescriptions.Item dataIndex="name" label="名称" valueType="textarea" />
-            <ProDescriptions.Item label="参加人数" dataIndex="user_number" valueType="textarea" />
-            <ProDescriptions.Item label="总金额" dataIndex="total_price" valueType="textarea" />
-            {
-              <List
-                itemLayout="horizontal"
-                dataSource={currentRow?.commodity_detail}
-                renderItem={(item) => (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={<Avatar src={item.avatar} />}
-                      title={item.name}
-                      description={
-                        '单价：' +
-                        item.price +
-                        '元\n' +
-                        '我已购买：' +
-                        item.number +
-                        '斤\n' +
-                        '整个团购买' +
-                        item.total_number +
-                        '斤'
-                      }
-                    />
-                  </List.Item>
-                )}
-              />
-            }
-          </ProDescriptions>
+          <>
+            <ProDescriptions
+              column={1}
+              title={currentRow?.name}
+              request={async () => ({
+                data: currentRow || {},
+              })}
+              columns={columns}
+            >
+              <ProDescriptions.Item dataIndex="id" label="id" />
+              <ProDescriptions.Item dataIndex="name" label="名称" valueType="textarea" />
+              <ProDescriptions.Item label="参加人数" dataIndex="user_number" valueType="textarea" />
+              <ProDescriptions.Item label="总金额" dataIndex="total_price" valueType="textarea" />
+            </ProDescriptions>
+            <List
+              itemLayout="horizontal"
+              dataSource={currentRow?.commodity_detail}
+              renderItem={(item) => (
+                <List.Item>
+                  <List.Item.Meta
+                    avatar={<Avatar src={item.avatar} />}
+                    title={item.name}
+                    style={{ whiteSpace: 'pre-wrap' }}
+                    description={
+                      '单价：' +
+                      item.price +
+                      '元\n' +
+                      '我已购买：' +
+                      item.number +
+                      '斤\n' +
+                      '整个团购买:' +
+                      item.total_number +
+                      '斤'
+                    }
+                  />
+                </List.Item>
+              )}
+            />
+          </>
         )}
       </Drawer>
     </PageContainer>
