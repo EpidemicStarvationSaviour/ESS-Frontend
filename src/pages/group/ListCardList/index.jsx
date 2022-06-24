@@ -259,7 +259,10 @@ const ListCardList = (props) => {
                 dataIndex: 'avatar',
                 key: 'avatar',
                 readonly: true,
-                // renderFormItem: (_, row) => <Image src={row.avatar} alt={row.name} height={80} />,
+                renderFormItem: (_, row) => {
+                  console.info(row)
+                  return < Image src={row.record.avatar} alt={row.name} height={80} />
+                },
                 render: (text, record, index) => <Image src={text} alt={record.name} height={80} />
               },
               {
