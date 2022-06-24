@@ -217,10 +217,10 @@ const DetailPage = (props) => {
           });
           return;
         }
-        var numbers = new Set()
+        var numbers = []
         data.commodity_detail.forEach(e => {
           e.users.forEach(u => {
-            numbers.add({
+            numbers.push({
               key: u.user_id,
               id: u.user_id,
               name: u.user_name,
@@ -228,7 +228,11 @@ const DetailPage = (props) => {
             })
           })
         })
-        setGroupNumbers(Array.from(numbers))
+        let obj = {};
+        setGroupNumbers(numbers.reduce((newArr, next) => {
+          obj[next.id] ? "" : (obj[next.id] = true && newArr.push(next));
+          return newArr;
+        }, []))
         changeProjectStatus(data.type);
       },
       onError: (error, parma) => {
@@ -429,7 +433,7 @@ const DetailPage = (props) => {
               <>
                 {currentProject.commodity_detail.map((r) => {
                   return (
-                    <div key={r.id}>
+                    <div key={r.type_id}>
                       <Descriptions
                         style={{
                           marginBottom: 16,
@@ -560,13 +564,9 @@ const DetailPage = (props) => {
                       currentProject.commodity_detail.find(({ type_id }) => (type_id == record.id)) ?
                         <Button danger size="large" shape="circle" icon={<MinusOutlined />}
                           onClick={async () => {
-                            var tmp = []
-                            currentProject.commodity_detail.forEach(element => {
-                              if (element.type_id != record.id) {
-                                tmp.push(element.type_id)
-                              }
-                            });
-                            await editDetail(currentProject.id, { commodities: tmp })
+                            await editDetail(currentProject.id, {
+                              commodities: currentProject.commodity_detail.filter(e => e.type_id !== record.id).map(e => e.type_id)
+                            })
                             runProject()
                           }
                           }
@@ -588,7 +588,7 @@ const DetailPage = (props) => {
           >
           </Table>
         </Card>
-      </GridContent>
+      </GridContent >
     </div >
   )
 
@@ -646,8 +646,8 @@ const DetailPage = (props) => {
 
   const content = {
     detail: detail,
-    commodity: !loadingProject && currentProject.type === 1 ? commodity : undefined,
-    purchaser: !loadingProject && currentProject.type === 1 ? purchaser : undefined,
+    commodity: !loadingProject && currentProject?.type === 1 ? commodity : undefined,
+    purchaser: !loadingProject && currentProject?.type === 1 ? purchaser : undefined,
   };
 
   return (

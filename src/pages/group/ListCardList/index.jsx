@@ -3,7 +3,7 @@ import { Button, Card, List, Typography, Row, Col, message, Tag, Form, Image, In
 import { PageContainer } from '@ant-design/pro-layout';
 import React, { useState } from 'react';
 import { useRequest, history } from 'umi';
-import { queryList, queryOwn } from './service';
+import { queryList, queryOwn, joinGroup } from './service';
 import styles from './style.less';
 const { Paragraph } = Typography;
 import {
@@ -14,8 +14,9 @@ import {
 } from '@ant-design/pro-table';
 const ListCardList = (props) => {
   const [editNeedVisible, setEditNeedVisible] = useState(false)
-  const [commodityInfo, setCommodityInfo] = useState([])
+  const [group, setGroup] = useState({})
   const [formRef] = Form.useForm();
+
   const { data: listData, loading } = useRequest(() => {
     return props.match.path != "/mygroup" ? queryOwn({
       type: 0,
@@ -121,7 +122,7 @@ const ListCardList = (props) => {
                           key="changeNeed"
                           type="link"
                           onClick={(e) => {
-                            setCommodityInfo(item.commodity_detail);
+                            setGroup(item)
                             setEditNeedVisible(true)
                           }}
                         >
@@ -215,15 +216,20 @@ const ListCardList = (props) => {
           onVisibleChange={(visible) => {
             if (visible) {
               formRef.setFieldsValue({
-                table: commodityInfo.map(item => (item["key"] = item.id, item))
+                table: group.commodity_detail
               })
             }
             setEditNeedVisible(visible)
           }}
           onFinish={
             async (values) => {
-              console.log(values);
+              console.info(values)
+              var req = {
+                id: group.id,
+                data: values.table.map((e) => ({ commodity_id: e.type_id, number: e.number }))
+              }
               try {
+                await joinGroup(req)
                 setEditNeedVisible(false);
               } catch (error) {
                 notification.error({
@@ -238,41 +244,62 @@ const ListCardList = (props) => {
           form={formRef}
         >
           <EditableProTable
+            rowKey="type_id"
             name="table"
             headerTitle="购物车"
             columns={
               [{
                 title: '名称',
                 dataIndex: 'name',
-                key: 'name'
-
+                key: 'name',
+                readonly: true,
               },
               {
                 title: '图片',
                 dataIndex: 'avatar',
                 key: 'avatar',
-                render: (text, record, index) => (
-                  <Image src={text} alt={record.name} height={80} />
-                )
+                readonly: true,
+                // renderFormItem: (_, row) => <Image src={row.avatar} alt={row.name} height={80} />,
+                render: (text, record, index) => <Image src={text} alt={record.name} height={80} />
               },
               {
                 title: '单价',
                 dataIndex: 'price',
-                key: 'price'
+                key: 'price',
+                readonly: true,
               },
               {
                 title: '购入量',
                 dataIndex: 'number',
                 key: 'number',
-                render: (_, row) => (<InputNumber defaultValue={row.number}></InputNumber>),
+                renderFormItem: (_, row) => <InputNumber defaultValue={row.number}></InputNumber>
               },
+              {
+                title: '操作',
+                valueType: 'option',
+                width: 200,
+                render: (text, record, _, action) => [
+                  <a
+                    key="editable"
+                    onClick={() => {
+                      action?.startEditable?.(record.type_id);
+                    }}
+                  >
+                    编辑
+                  </a>,
+                ],
+              }
               ]}
             recordCreatorProps={false}
+            editable={{
+              type: "multiple",
+              actionRender: (row, config, defaultDom) => [defaultDom.save, defaultDom.cancel],
+            }}
           >
           </EditableProTable>
         </ ModalForm>
       </div>
-    </PageContainer>
+    </PageContainer >
   );
 };
 
