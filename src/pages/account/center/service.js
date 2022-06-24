@@ -7,7 +7,7 @@ export async function queryCurrent() {
 export async function queryOwnGroup(params) {
   return request('/api/group/own', {
     method: 'GET',
-    data: params,
+    params: params,
   });
 }
 
