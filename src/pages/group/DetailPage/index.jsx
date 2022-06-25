@@ -86,17 +86,21 @@ const description = (project) => (
         <Descriptions.Item label="订单备注">{project?.remark}</Descriptions.Item>
         <Descriptions.Item label="参与者数">{project?.user_number}</Descriptions.Item>
         <Descriptions.Item label="商品种数">{project?.commodity_detail.length}</Descriptions.Item>
-        <Descriptions.Item label="骑手姓名">{project?.rider_name}</Descriptions.Item>
-        <Descriptions.Item label="骑手手机号">{project?.rider_phone}</Descriptions.Item>
-        <Descriptions.Item label="骑手位置">
-          {'纬度: ' + (project?.rider_pos?.lat || 0) + ' 经度: ' + (project?.rider_pos?.lng || 0)}
-        </Descriptions.Item>
-        <Descriptions.Item label="骑手位置上次更新于">
-          {moment.unix(project?.rider_pos?.update_time).format('llll')}
-        </Descriptions.Item>
-        <Descriptions.Item label="骑手预计送达时间">
-          {project?.rider_pos?.eta || 0} 分钟
-        </Descriptions.Item>
+        {project?.rider_name ?
+          <>
+            <Descriptions.Item label="骑手姓名">{project?.rider_name}</Descriptions.Item>
+            <Descriptions.Item label="骑手手机号">{project?.rider_phone}</Descriptions.Item>
+            <Descriptions.Item label="骑手位置">
+              {'纬度: ' + (project?.rider_pos?.lat || 0) + ' 经度: ' + (project?.rider_pos?.lng || 0)}
+            </Descriptions.Item>
+            <Descriptions.Item label="骑手位置上次更新于">
+              {moment.unix(project?.rider_pos?.update_time).format('llll')}
+            </Descriptions.Item>
+            <Descriptions.Item label="骑手预计送达时间">
+              {project?.rider_pos?.eta || 0} 分钟
+            </Descriptions.Item>
+          </>
+          : null}
         <Descriptions.Item label="创建时间">
           {moment.unix(project?.created_time).format('llll')}
         </Descriptions.Item>
@@ -105,7 +109,7 @@ const description = (project) => (
         </Descriptions.Item>
       </Descriptions>
     )}
-  </RouteContext.Consumer>
+  </RouteContext.Consumer >
 );
 
 const desc1 = (project) => (
