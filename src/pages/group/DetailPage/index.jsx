@@ -4,7 +4,7 @@ import {
   ExclamationCircleOutlined,
   SyncOutlined,
   PlusOutlined,
-  MinusOutlined
+  MinusOutlined,
 } from '@ant-design/icons';
 import {
   Image,
@@ -24,11 +24,7 @@ import {
   notification,
 } from 'antd';
 import { GridContent, PageContainer, RouteContext } from '@ant-design/pro-layout';
-import {
-  ModalForm,
-  ProFormSelect,
-  ProFormText,
-} from '@ant-design/pro-form';
+import { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-form';
 import React, { Fragment, useState } from 'react';
 import classNames from 'classnames';
 import { useRequest, useAccess, history } from 'umi';
@@ -37,7 +33,7 @@ import {
   deleteProject,
   queryProject,
   queryCurrent,
-  queryCommodityList
+  queryCommodityList,
 } from './service';
 import moment from 'moment';
 import styles from './style.less';
@@ -79,8 +75,12 @@ const description = (project) => (
         <Descriptions.Item label="团体ID">{project?.id}</Descriptions.Item>
         <Descriptions.Item label="创建人">{project?.creator_name}</Descriptions.Item>
         <Descriptions.Item label="地址">
-          {[project?.creator_address?.province, project?.creator_address?.city,
-          project?.creator_address?.area, project?.creator_address?.detail].join(" ")}
+          {[
+            project?.creator_address?.province,
+            project?.creator_address?.city,
+            project?.creator_address?.area,
+            project?.creator_address?.detail,
+          ].join(' ')}
         </Descriptions.Item>
         <Descriptions.Item label="团体简介">{project?.description}</Descriptions.Item>
         <Descriptions.Item label="订单备注">{project?.remark}</Descriptions.Item>
@@ -94,7 +94,9 @@ const description = (project) => (
         <Descriptions.Item label="骑手位置上次更新于">
           {moment.unix(project?.rider_pos?.update_time).format('llll')}
         </Descriptions.Item>
-        <Descriptions.Item label="骑手预计送达时间">{project?.rider_pos?.eta || 0} 分钟</Descriptions.Item>
+        <Descriptions.Item label="骑手预计送达时间">
+          {project?.rider_pos?.eta || 0} 分钟
+        </Descriptions.Item>
         <Descriptions.Item label="创建时间">
           {moment.unix(project?.created_time).format('llll')}
         </Descriptions.Item>
@@ -198,7 +200,7 @@ const DetailPage = (props) => {
         );
       }}
     </RouteContext.Consumer>
-  )
+  );
 
   const {
     data: currentProject,
@@ -217,22 +219,24 @@ const DetailPage = (props) => {
           });
           return;
         }
-        var numbers = []
-        data.commodity_detail.forEach(e => {
-          e.users.forEach(u => {
+        var numbers = [];
+        data.commodity_detail.forEach((e) => {
+          e.users.forEach((u) => {
             numbers.push({
               key: u.user_id,
               id: u.user_id,
               name: u.user_name,
-              phone: u.user_phone
-            })
-          })
-        })
+              phone: u.user_phone,
+            });
+          });
+        });
         let obj = {};
-        setGroupNumbers(numbers.reduce((newArr, next) => {
-          obj[next.id] ? "" : (obj[next.id] = true && newArr.push(next));
-          return newArr;
-        }, []))
+        setGroupNumbers(
+          numbers.reduce((newArr, next) => {
+            obj[next.id] ? '' : (obj[next.id] = true && newArr.push(next));
+            return newArr;
+          }, []),
+        );
         changeProjectStatus(data.type);
       },
       onError: (error, parma) => {
@@ -250,7 +254,7 @@ const DetailPage = (props) => {
 
   const { data: commodityList, loading: loadingCommodityList } = useRequest(
     () => {
-      return queryCommodityList()
+      return queryCommodityList();
     },
     {
       onSuccess: (data, parma) => {
@@ -269,7 +273,7 @@ const DetailPage = (props) => {
         });
       },
     },
-  )
+  );
 
   const dispatch = (type) => {
     switch (type) {
@@ -299,7 +303,6 @@ const DetailPage = (props) => {
         //delete this project
         confirmDelete();
         break;
-
     }
   };
 
@@ -433,7 +436,7 @@ const DetailPage = (props) => {
               <>
                 {currentProject.commodity_detail.map((r) => {
                   return (
-                    <div key={r.type_id}>
+                    <div key={r.id}>
                       <Descriptions
                         style={{
                           marginBottom: 16,
@@ -448,32 +451,39 @@ const DetailPage = (props) => {
                         <Descriptions.Item label="总量">{r.total_number}</Descriptions.Item>
                         <Descriptions.Item label="购买人数">{r.users.length}</Descriptions.Item>
                         <Descriptions.Item>
-                          <Button type="link" onClick={
-                            () => {
+                          <Button
+                            type="link"
+                            onClick={() => {
                               Modal.info({
-                                title: "购买人列表",
-                                content: <Table
-                                  columns={[
-                                    {
-                                      title: '姓名',
-                                      dataIndex: 'user_name',
-                                      key: 'name',
-                                    }, {
-                                      title: '电话',
-                                      dataIndex: 'user_phone',
-                                      key: 'phone',
-                                    }, {
-                                      title: '数量',
-                                      dataIndex: 'number',
-                                      key: 'number',
-                                    }]}
-                                  pagination={false}
-                                  size={"small"}
-                                  bordered={true}
-                                  dataSource={r.users} />
-                              })
-                            }
-                          }>
+                                title: '购买人列表',
+                                content: (
+                                  <Table
+                                    columns={[
+                                      {
+                                        title: '姓名',
+                                        dataIndex: 'user_name',
+                                        key: 'name',
+                                      },
+                                      {
+                                        title: '电话',
+                                        dataIndex: 'user_phone',
+                                        key: 'phone',
+                                      },
+                                      {
+                                        title: '数量',
+                                        dataIndex: 'number',
+                                        key: 'number',
+                                      },
+                                    ]}
+                                    pagination={false}
+                                    size={'small'}
+                                    bordered={true}
+                                    dataSource={r.users}
+                                  />
+                                ),
+                              });
+                            }}
+                          >
                             查看明细
                           </Button>
                         </Descriptions.Item>
@@ -505,92 +515,106 @@ const DetailPage = (props) => {
           bordered={false}
         >
           <Table
-            columns={
-              [{
+            columns={[
+              {
                 title: '种类',
                 dataIndex: 'type_name',
-                key: 'type_name'
+                key: 'type_name',
               },
               {
                 title: '图片',
                 dataIndex: 'type_avatar',
-                key: 'type_avatar'
-              }]
-            }
+                key: 'type_avatar',
+              },
+            ]}
             dataSource={
-              loadingCommodityList ? [] : commodityList.map(
-                (e) => {
-                  return {
-                    key: e.type_id,
-                    type_name: e.type_name,
-                    type_avatar: <Image src={e.type_avatar} height={80} alt={e.type_name} />,
-                    subcommodity: e.children
-                  }
-                }
-              )
+              loadingCommodityList
+                ? []
+                : commodityList.map((e) => {
+                    return {
+                      key: e.type_id,
+                      type_name: e.type_name,
+                      type_avatar: <Image src={e.type_avatar} height={80} alt={e.type_name} />,
+                      subcommodity: e.children,
+                    };
+                  })
             }
             expandable={{
               defaultExpandAllRows: true,
               expandedRowRender: (record) => (
-                <Table columns={
-                  [{
-                    title: '名称',
-                    dataIndex: 'name',
-                    key: 'name'
-
-                  },
-                  {
-                    title: '图片',
-                    dataIndex: 'avatar',
-                    key: 'avatar',
-                    render: (text, record, index) => (
-                      <Image src={text} alt={record.name} height={80} />
-                    )
-                  },
-                  {
-                    title: '单价',
-                    dataIndex: 'price',
-                    key: 'price'
-                  },
-                  {
-                    title: '库存',
-                    dataIndex: 'total',
-                    key: 'total'
-                  },
-                  {
-                    title: '操作',
-                    key: 'operation',
-                    render: (text, record, index) => (
-                      currentProject.commodity_detail.find(({ type_id }) => (type_id == record.id)) ?
-                        <Button danger size="large" shape="circle" icon={<MinusOutlined />}
-                          onClick={async () => {
-                            await editDetail(currentProject.id, {
-                              commodities: currentProject.commodity_detail.filter(e => e.type_id !== record.id).map(e => e.type_id)
-                            })
-                            runProject()
-                          }
-                          }
-                        ></Button> :
-                        <Button type="primary" size="large" shape="circle" icon={<PlusOutlined />}
-                          onClick={async () => {
-                            await editDetail(currentProject.id, { commodities: [...currentProject.commodity_detail.map(e => e.type_id), record.id] })
-                            runProject()
-                          }}
-                        ></Button>
-                    )
-                  },
+                <Table
+                  columns={[
+                    {
+                      title: '名称',
+                      dataIndex: 'name',
+                      key: 'name',
+                    },
+                    {
+                      title: '图片',
+                      dataIndex: 'avatar',
+                      key: 'avatar',
+                      render: (text, record, index) => (
+                        <Image src={text} alt={record.name} height={80} />
+                      ),
+                    },
+                    {
+                      title: '单价',
+                      dataIndex: 'price',
+                      key: 'price',
+                    },
+                    {
+                      title: '库存',
+                      dataIndex: 'total',
+                      key: 'total',
+                    },
+                    {
+                      title: '操作',
+                      key: 'operation',
+                      render: (text, record, index) =>
+                        currentProject.commodity_detail.find(({ id }) => id == record.id) ? (
+                          <Button
+                            danger
+                            size="large"
+                            shape="circle"
+                            icon={<MinusOutlined />}
+                            onClick={async () => {
+                              await editDetail(currentProject.id, {
+                                commodities: currentProject.commodity_detail
+                                  .filter((e) => e.id !== record.id)
+                                  .map((e) => e.id),
+                              });
+                              runProject();
+                            }}
+                          />
+                        ) : (
+                          <Button
+                            type="primary"
+                            size="large"
+                            shape="circle"
+                            icon={<PlusOutlined />}
+                            onClick={async () => {
+                              await editDetail(currentProject.id, {
+                                commodities: [
+                                  ...currentProject.commodity_detail.map((e) => e.id),
+                                  record.id,
+                                ],
+                              });
+                              runProject();
+                            }}
+                          />
+                        ),
+                    },
                   ]}
-                  dataSource={record.subcommodity.map((e) => (e.key = e.id, e))}
+                  dataSource={record.subcommodity.map((e) => ((e.key = e.id), e))}
                   pagination={false}
                 />
-              )
+              ),
             }}
-          >
-          </Table>
+          />
         </Card>
-      </GridContent >
-    </div >
-  )
+      </GridContent>
+    </div>
+  );
 
   const purchaser = (
     <div className={styles.main}>
@@ -603,46 +627,45 @@ const DetailPage = (props) => {
           bordered={false}
         >
           <Table
-            columns={
-              [{
+            columns={[
+              {
                 title: 'ID',
                 dataIndex: 'id',
-                key: 'id'
+                key: 'id',
               },
               {
                 title: '用户名',
                 dataIndex: 'name',
-                key: 'name'
+                key: 'name',
               },
               {
                 title: '电话',
                 dataIndex: 'phone',
-                key: 'phone'
+                key: 'phone',
               },
               {
                 title: '操作',
                 key: 'operation',
                 render: (text, record, index) => (
-                  <Button danger size="large"
+                  <Button
+                    danger
+                    size="large"
                     onClick={async () => {
-                      await editDetail(currentProject.id, { deleted_users: [record.id] })
-                      runProject()
-                    }}>
+                      await editDetail(currentProject.id, { deleted_users: [record.id] });
+                      runProject();
+                    }}
+                  >
                     移除
                   </Button>
-                )
-              }
-              ]
-            }
-            dataSource={
-              groupNumbers
-            }
-          >
-          </Table>
+                ),
+              },
+            ]}
+            dataSource={groupNumbers}
+          />
         </Card>
       </GridContent>
     </div>
-  )
+  );
 
   const content = {
     detail: detail,
@@ -701,29 +724,27 @@ const DetailPage = (props) => {
       )}
       <ModalForm
         title="修改信息"
-        onFinish={
-          async (values) => {
-            try {
-              await editDetail(currentProject.id, values);
-              runProject();
-            } catch (error) {
-              notification.error({
-                duration: 4,
-                message: '团体信息修改失败，请刷新重试',
-                content: error.message,
-              })
-            }
-            return true
+        onFinish={async (values) => {
+          try {
+            await editDetail(currentProject.id, values);
+            runProject();
+          } catch (error) {
+            notification.error({
+              duration: 4,
+              message: '团体信息修改失败，请刷新重试',
+              content: error.message,
+            });
           }
-        }
+          return true;
+        }}
         visible={editDetailVisible}
         onVisibleChange={(visible) => {
           if (visible) {
-            var { ...group } = currentProject
+            var { ...group } = currentProject;
             group.address_id = group.creator_address.id;
-            editDetailForm.setFieldsValue(group)
+            editDetailForm.setFieldsValue(group);
           }
-          setEditDetailVisible(visible)
+          setEditDetailVisible(visible);
         }}
         form={editDetailForm}
       >
@@ -764,16 +785,17 @@ const DetailPage = (props) => {
           label="派送地址"
           name="address_id"
           options={
-            !User ? [] : User.user_address.map((e) => {
-              return {
-                label: [e.province, e.city, e.area, e.detail].join(' '),
-                value: e.id,
-              };
-            })
+            !User
+              ? []
+              : User.user_address.map((e) => {
+                  return {
+                    label: [e.province, e.city, e.area, e.detail].join(' '),
+                    value: e.id,
+                  };
+                })
           }
-        >
-        </ ProFormSelect>
-      </ ModalForm>
+        ></ProFormSelect>
+      </ModalForm>
     </>
   );
 };
