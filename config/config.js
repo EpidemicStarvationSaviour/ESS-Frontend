@@ -199,6 +199,7 @@ export default defineConfig({
       name: '团长管理',
       icon: 'smile',
       path: '/group',
+      access: 'canAgent',
       routes: [
         {
           name: '创建团体',

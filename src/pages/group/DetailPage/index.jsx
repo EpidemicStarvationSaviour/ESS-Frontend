@@ -364,13 +364,7 @@ const DetailPage = (props) => {
     }
     try {
       let res = await editDetail(currentProject.id, { type: projectStatus });
-      if (res.status == 'success') {
-        notification.success({
-          duration: 4,
-          message: '修改成功',
-          content: '修改成功',
-        });
-      } else {
+      if (res.status == 'error') {
         notification.error({
           duration: 4,
           message: '团体信息修改失败，请刷新重试',
@@ -526,13 +520,13 @@ const DetailPage = (props) => {
               loadingCommodityList
                 ? []
                 : commodityList.map((e) => {
-                    return {
-                      key: e.type_id,
-                      type_name: e.type_name,
-                      type_avatar: <Image src={e.type_avatar} height={80} alt={e.type_name} />,
-                      subcommodity: e.children,
-                    };
-                  })
+                  return {
+                    key: e.type_id,
+                    type_name: e.type_name,
+                    type_avatar: <Image src={e.type_avatar} height={80} alt={e.type_name} />,
+                    subcommodity: e.children,
+                  };
+                })
             }
             expandable={{
               defaultExpandAllRows: true,
@@ -783,11 +777,11 @@ const DetailPage = (props) => {
             !User
               ? []
               : User.user_address.map((e) => {
-                  return {
-                    label: [e.province, e.city, e.area, e.detail].join(' '),
-                    value: e.id,
-                  };
-                })
+                return {
+                  label: [e.province, e.city, e.area, e.detail].join(' '),
+                  value: e.id,
+                };
+              })
           }
         ></ProFormSelect>
       </ModalForm>

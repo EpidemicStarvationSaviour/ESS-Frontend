@@ -14,7 +14,7 @@ import {
 } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import React, { useState } from 'react';
-import { useRequest, history } from 'umi';
+import { useRequest, useAccess, history } from 'umi';
 import { queryList, queryOwn, joinGroup } from './service';
 import styles from './style.less';
 const { Paragraph } = Typography;
@@ -24,7 +24,7 @@ const ListCardList = (props) => {
   const [editNeedVisible, setEditNeedVisible] = useState(false);
   const [group, setGroup] = useState({});
   const [formRef] = Form.useForm();
-
+  const access = useAccess();
   const {
     data: listData,
     loading,
@@ -32,14 +32,14 @@ const ListCardList = (props) => {
   } = useRequest(() => {
     return props.match.path != '/mygroup'
       ? queryOwn({
-          type: 0,
-          page_size: 10000,
-          page_num: 1,
-        })
+        type: 0,
+        page_size: 10000,
+        page_num: 1,
+      })
       : queryList({
-          page_size: 10000,
-          page_num: 1,
-        });
+        page_size: 10000,
+        page_num: 1,
+      });
   });
 
   const ProjectType = (type) => {

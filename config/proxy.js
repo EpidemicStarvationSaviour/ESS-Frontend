@@ -9,7 +9,7 @@
 export default {
   dev: {
     '/api/': {
-      target: 'http://localhost:8080',
+      target: 'https://se.raynor.top/',
       changeOrigin: true,
       pathRewrite: {
         '^': '',
