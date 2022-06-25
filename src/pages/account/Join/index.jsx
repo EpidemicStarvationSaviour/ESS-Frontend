@@ -187,7 +187,7 @@ const TableList = () => {
           };
           for (let i in value) {
             request.data.push({
-              commodity_id: i,
+              commodity_id: parseInt(i),
               number: value[i],
             });
           }
@@ -207,6 +207,7 @@ const TableList = () => {
             key={r.id}
             name={r.id}
             label={r.name + ' ' + r.price + '元'}
+            required={true}
             tooltip={
               '单价：' +
               r.price +
@@ -218,6 +219,12 @@ const TableList = () => {
               r.total_number +
               '斤'
             }
+            rules={[
+              {
+                required: true,
+                message: '请输入数量',
+              },
+            ]}
           >
             <InputNumber key={1000 + r.id} />
           </Form.Item>
