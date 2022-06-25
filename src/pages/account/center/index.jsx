@@ -178,6 +178,7 @@ const Center = () => {
     if (!default_address) {
       default_address = user_address[0];
     }
+    default_address = default_address || {};
     return (
       <div className={styles.detail}>
         <p>

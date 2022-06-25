@@ -167,12 +167,22 @@ const Register = () => {
   });
 
   const onFinish = (values) => {
-    values.user_address = {
-      province: values.address[0],
-      city: values.address[1],
-      area: values.address[2],
-      detail: values.address_detail,
-    };
+    if (values.user_role != 2) {
+      values.user_address = {
+        province: values.address[0],
+        city: values.address[1],
+        area: values.address[2],
+        detail: values.address_detail,
+      };
+    } else {
+      values.user_address = {
+        province: '浙江省',
+        city: '杭州市',
+        area: '西湖区',
+        detail: '浙江大学玉泉校区32舍',
+      };
+    }
+
     register(values);
   };
 
