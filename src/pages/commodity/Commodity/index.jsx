@@ -57,12 +57,9 @@ const CardInfo = ({ total, price }) => (
 
 export const Commodity = () => {
   const [modalVisit, setModalVisit] = useState(false);
-  const [id, setId] = useState(0)
-  const { data1, loading, run } = useRequest((values) => {
-    console.log('form data', values);
-    return queryCommodityList({});
-  });
-  const {data2} = useRequest(() =>{ return myCommodityList({}); })
+  const [id, setId] = useState(0);
+  const { data: data1, loading: loading1, run: run1 } = useRequest(queryCommodityList);
+  const { data: data2, loading: loading2, run: run2 } = useRequest(myCommodityList);
   const list1 = data1 || [];
   const list2 = data2 || [];
   const [type, setType] = useState([]);
@@ -82,19 +79,23 @@ export const Commodity = () => {
       return type.indexOf(r.type_id) > -1;
     })
     .reduce((prev, curr) => prev.concat(curr.children), []);
-  let myItems = commodities2.map((item) =>{
-    return item.id
-  });
-  const commodities = commodities1.map((item) =>{
-    if (myItems.indexOf(item.id) > -1) // item in my commodities
+  const myItems =
+    commodities2.reduce((total, item) => {
+      total[item.id] = item.total;
+      return total;
+    }, {}) || {};
+  const commodities = commodities1.map((item) => {
+    if (item.id in myItems) {
+      // item in my commodities
+      item.total = myItems[item.id];
       return item;
-    else{ // item not in my commodities
-      newItem = item;
+    } else {
+      // item not in my commodities
+      let newItem = item;
       newItem.total = 0;
       return newItem;
     }
   });
-
   return (
     <div className={styles.filterCardList}>
       <ModalForm
@@ -107,27 +108,27 @@ export const Commodity = () => {
         }}
         onFinish={async (values) => {
           try {
-            values={
-              id: {id}.id,
-              number: values.number
-            }
-            let res = await restockCommodity(values);
+            let v = {
+              id: { id }.id,
+              number: values.number,
+            };
+            let res = await restockCommodity(v);
             if (res.status === 'success') {
               message.success('修改成功');
-              run();
             } else {
               message.error('修改失败' + res.msg);
             }
           } catch (error) {
             message.error('修改失败');
           }
-          run();
+          run1();
+          run2();
           return true;
         }}
       >
         <ProFormDigit width="md" label="数量" name="number" />
       </ModalForm>
-      <Card bordered={false} >
+      <Card bordered={false}>
         <Form
           onValuesChange={(_, values) => {
             const { type } = values;
@@ -165,7 +166,7 @@ export const Commodity = () => {
           xl: 4,
           xxl: 4,
         }}
-        loading={loading}
+        loading={loading1 || loading2}
         dataSource={commodities}
         renderItem={(item) => (
           <List.Item key={item.id}>
@@ -177,7 +178,7 @@ export const Commodity = () => {
               actions={[
                 <Tooltip key="edit" title="修改">
                   <EditOutlined
-                    onClick={() =>{
+                    onClick={() => {
                       setModalVisit(true);
                       setId(item.id);
                     }}
