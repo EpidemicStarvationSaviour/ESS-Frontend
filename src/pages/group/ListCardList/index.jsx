@@ -25,7 +25,11 @@ const ListCardList = (props) => {
   const [group, setGroup] = useState({});
   const [formRef] = Form.useForm();
 
-  const { data: listData, loading } = useRequest(() => {
+  const {
+    data: listData,
+    loading,
+    run: runListData,
+  } = useRequest(() => {
     return props.match.path != '/mygroup'
       ? queryOwn({
           type: 0,
@@ -239,6 +243,8 @@ const ListCardList = (props) => {
             };
             try {
               await joinGroup(req);
+              message.success('修改成功');
+              runListData();
               setEditNeedVisible(false);
             } catch (error) {
               notification.error({
@@ -247,6 +253,7 @@ const ListCardList = (props) => {
                 content: error.message,
               });
             }
+
             return true;
           }}
           form={formRef}
@@ -267,9 +274,9 @@ const ListCardList = (props) => {
                 dataIndex: 'avatar',
                 key: 'avatar',
                 readonly: true,
-                renderFormItem: (_, row) => {
-                  console.info(row);
-                  return <Image src={row.record.avatar} alt={row.name} height={80} />;
+                renderFormItem: (text, row) => {
+                  console.info(text, row);
+                  return <Image src={text.entry.avatar} alt={text.entry.name} height={80} />;
                 },
                 render: (text, record, index) => <Image src={text} alt={record.name} height={80} />,
               },

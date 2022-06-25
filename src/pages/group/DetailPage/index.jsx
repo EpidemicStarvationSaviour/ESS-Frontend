@@ -521,11 +521,6 @@ const DetailPage = (props) => {
                 dataIndex: 'type_name',
                 key: 'type_name',
               },
-              {
-                title: '图片',
-                dataIndex: 'type_avatar',
-                key: 'type_avatar',
-              },
             ]}
             dataSource={
               loadingCommodityList
