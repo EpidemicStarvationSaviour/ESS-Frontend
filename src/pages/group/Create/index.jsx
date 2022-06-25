@@ -70,13 +70,13 @@ const Create = () => {
               loadingCommodityList
                 ? []
                 : commodityList.map((e) => {
-                  return {
-                    key: e.type_id,
-                    type_name: e.type_name,
-                    type_avatar: <Image src={e.type_avatar} height={80} alt={e.type_name} />,
-                    subcommodity: e.children,
-                  };
-                })
+                    return {
+                      key: e.type_id,
+                      type_name: e.type_name,
+                      type_avatar: <Image src={e.type_avatar} height={80} alt={e.type_name} />,
+                      subcommodity: e.children,
+                    };
+                  })
             }
             expandable={{
               defaultExpandAllRows: true,
@@ -121,7 +121,7 @@ const Create = () => {
                               copy.splice(commidityData.indexOf(record.id), 1);
                               setCommidityData(copy);
                             }}
-                          ></Button>
+                          />
                         ) : (
                           <Button
                             type="primary"
@@ -131,7 +131,7 @@ const Create = () => {
                             onClick={() => {
                               setCommidityData([...commidityData, record.id]);
                             }}
-                          ></Button>
+                          />
                         ),
                     },
                   ]}
@@ -140,12 +140,11 @@ const Create = () => {
                 />
               ),
             }}
-          ></Table>
+          />
         </Card>
       </GridContent>
     </div>
   );
-
 
   const getErrorInfo = (errors) => {
     const errorCount = errors.filter((item) => item.errors.length > 0).length;
@@ -211,9 +210,9 @@ const Create = () => {
     }
 
     try {
-      values['commodities'] = commidityData
-      values['user_group_id'] = userGroup
-      let res = await submitForm(values)
+      values['commodities'] = commidityData;
+      values['user_group_id'] = userGroup;
+      let res = await submitForm(values);
       if (res.status != 'success') {
         notification.error({
           duration: 4,
@@ -371,11 +370,11 @@ const Create = () => {
                       !User
                         ? []
                         : User.user_address.map((e) => {
-                          return {
-                            label: [e.province, e.city, e.area, e.detail].join(' '),
-                            value: e.id,
-                          };
-                        })
+                            return {
+                              label: [e.province, e.city, e.area, e.detail].join(' '),
+                              value: e.id,
+                            };
+                          })
                     }
                   ></ProFormSelect>
                 </Col>
@@ -400,17 +399,17 @@ const Create = () => {
                     options={
                       Groups.data
                         ? Groups.data.map((r) => {
-                          return {
-                            label: r.name,
-                            value: r.id,
-                          };
-                        })
+                            return {
+                              label: r.name,
+                              value: r.id,
+                            };
+                          })
                         : [
-                          {
-                            label: '未找到团体',
-                            value: null,
-                          },
-                        ]
+                            {
+                              label: '未找到团体',
+                              value: null,
+                            },
+                          ]
                     }
                     onChange={(e) => {
                       setUserGroup(e);

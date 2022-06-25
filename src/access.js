@@ -18,5 +18,10 @@ export default function access(initialState) {
     canSysAdmin: currentUser && currentUser.user_role === SysAdmin, // 是否是系统管理员
     canSeeMygroup:
       currentUser && (currentUser.user_role === Agent || currentUser.user_role === Purchaser), // 是否可以查看 参与的团
+    canSeeJoingroup:
+      currentUser &&
+      (currentUser.user_role === Agent ||
+        currentUser.user_role === Purchaser ||
+        currentUser.user_role == SysAdmin), // 是否可以查看 参与的团
   };
 }
