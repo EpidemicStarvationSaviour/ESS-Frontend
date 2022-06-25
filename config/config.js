@@ -138,6 +138,7 @@ export default defineConfig({
           icon: 'smile',
           path: '/account/join',
           component: './account/Join',
+          access: 'canSeeJoingroup',
         },
       ],
     },
