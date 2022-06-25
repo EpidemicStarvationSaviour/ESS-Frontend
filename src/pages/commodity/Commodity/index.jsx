@@ -27,6 +27,7 @@ import {
   ProFormText,
   ProFormDigit,
 } from '@ant-design/pro-components';
+import { ItemPanel } from 'gg-editor';
 
 const { Option } = Select;
 
@@ -57,13 +58,15 @@ const CardInfo = ({ total, price }) => (
 export const Commodity = () => {
   const [modalVisit, setModalVisit] = useState(false);
   const [id, setId] = useState(0)
-  const { data, loading, run } = useRequest((values) => {
+  const { data1, loading, run } = useRequest((values) => {
     console.log('form data', values);
-    return myCommodityList({});
+    return queryCommodityList({});
   });
-  const list1 = data || [];
+  const {data2} = useRequest(() =>{ return myCommodityList({}); })
+  const list1 = data1 || [];
+  const list2 = data2 || [];
   const [type, setType] = useState([]);
-  const commodities = list1
+  const commodities1 = list1
     ?.filter((r) => {
       if (!type || type.length === 0) {
         return true;
@@ -71,6 +74,26 @@ export const Commodity = () => {
       return type.indexOf(r.type_id) > -1;
     })
     .reduce((prev, curr) => prev.concat(curr.children), []);
+  const commodities2 = list2
+    ?.filter((r) => {
+      if (!type || type.length === 0) {
+        return true;
+      }
+      return type.indexOf(r.type_id) > -1;
+    })
+    .reduce((prev, curr) => prev.concat(curr.children), []);
+  let myItems = commodities2.map((item) =>{
+    return item.id
+  });
+  const commodities = commodities1.map((item) =>{
+    if (myItems.indexOf(item.id) > -1) // item in my commodities
+      return item;
+    else{ // item not in my commodities
+      newItem = item;
+      newItem.total = 0;
+      return newItem;
+    }
+  });
 
   return (
     <div className={styles.filterCardList}>
