@@ -131,6 +131,7 @@ const ListCardList = (props) => {
                       </Button>,
                       <Button
                         danger={item.type === 1}
+                        disabled={item.type !== 1}
                         key="changeNeed"
                         type="link"
                         onClick={(e) => {

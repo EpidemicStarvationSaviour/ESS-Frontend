@@ -677,44 +677,52 @@ const DetailPage = (props) => {
           extraContent={extra(currentProject)}
           tabActiveKey={tabStatus.tabActiveKey}
           onTabChange={onTabChange}
-          tabList={[
-            {
+          tabList={currentProject?.type === 1 ?
+            [
+              {
+                key: 'detail',
+                tab: '详情',
+              },
+              {
+                key: 'commodity',
+                tab: '商品管理',
+              },
+              {
+                key: 'purchaser',
+                tab: '成员管理',
+              },
+            ] : [{
               key: 'detail',
               tab: '详情',
             },
-            {
-              key: 'commodity',
-              tab: '商品管理',
-            },
-            {
-              key: 'purchaser',
-              tab: '成员管理',
-            },
-          ]}
+            ]}
         >
           {content[tabStatus.tabActiveKey]}
         </PageContainer>
-      )}
+      )
+      }
 
-      {!loadingProject && changeStatusVisible && (
-        <Modal
-          title="改变状态"
-          visible={changeStatusVisible}
-          onOk={onCsModalOk}
-          onCancel={onCsModalCancel}
-        >
-          <Select
-            value={projectStatus}
-            onChange={(e) => changeProjectStatus(e)}
-            style={{ width: 150 }}
+      {
+        !loadingProject && changeStatusVisible && (
+          <Modal
+            title="改变状态"
+            visible={changeStatusVisible}
+            onOk={onCsModalOk}
+            onCancel={onCsModalCancel}
           >
-            <Select.Option value={1}>已经创建</Select.Option>
-            <Select.Option value={2}>正在规划配送方案</Select.Option>
-            <Select.Option value={3}>正在配送</Select.Option>
-            <Select.Option value={4}>已经完成</Select.Option>
-          </Select>
-        </Modal>
-      )}
+            <Select
+              value={projectStatus}
+              onChange={(e) => changeProjectStatus(e)}
+              style={{ width: 150 }}
+            >
+              <Select.Option value={1}>已经创建</Select.Option>
+              <Select.Option value={2}>正在规划配送方案</Select.Option>
+              <Select.Option value={3}>正在配送</Select.Option>
+              <Select.Option value={4}>已经完成</Select.Option>
+            </Select>
+          </Modal>
+        )
+      }
       <ModalForm
         title="修改信息"
         onFinish={async (values) => {
