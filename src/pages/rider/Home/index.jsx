@@ -17,7 +17,7 @@ import { useRequest, history } from 'umi';
 import { queryList, queryNext, reportPos, riderStart, riderStop } from './service';
 import styles from './style.less';
 const { Paragraph } = Typography;
-const Home = (props) => {
+const Home = () => {
   const { data: listData, loading } = useRequest(() => {
     return queryList({
       page_num: 1,
@@ -153,10 +153,10 @@ const Home = (props) => {
           grid={{
             gutter: 16,
             xs: 1,
-            sm: 2,
-            md: 3,
-            lg: 3,
-            xl: 4,
+            sm: 1,
+            md: 2,
+            lg: 2,
+            xl: 3,
             xxl: 4,
           }}
           dataSource={listData?.data || []}
@@ -217,9 +217,9 @@ const Home = (props) => {
                         >
                           {[
                             item.creator_address.province +
-                              item.creator_address.city +
-                              item.creator_address.area +
-                              item.creator_address.detail,
+                            item.creator_address.city +
+                            item.creator_address.area +
+                            item.creator_address.detail,
                           ].join(' ')}
                         </Paragraph>
                       </>
