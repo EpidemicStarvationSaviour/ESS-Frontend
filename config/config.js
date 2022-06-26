@@ -246,14 +246,14 @@ export default defineConfig({
           component: './rider/Home',
           access: 'canLogistics',
         },
-        // {
-        //   name: '订单详情',
-        //   icon: 'smile',
-        //   path: '/group/detail/:id',
-        //   hideInMenu: true,
-        //   component: './group/DetailPage',
-        //   access: 'canLogistics',
-        // },
+        {
+          name: '订单详情',
+          icon: 'smile',
+          path: '/rider/detail/:id',
+          hideInMenu: true,
+          component: './rider/DetailPage',
+          access: 'canLogistics',
+        },
       ],
     },
     {
