@@ -2,18 +2,11 @@ import { EditOutlined } from '@ant-design/icons';
 import {
   Avatar,
   Card,
-  Col,
-  Dropdown,
   Form,
   List,
-  Menu,
-  Row,
-  Select,
   Tooltip,
-  Button,
   message,
 } from 'antd';
-import numeral from 'numeral';
 import React, { useState } from 'react';
 import { useRequest } from 'umi';
 import StandardFormRow from './components/StandardFormRow';
@@ -22,25 +15,10 @@ import { queryCommodityList, myCommodityList, restockCommodity } from './service
 import styles from './style.less';
 import {
   ModalForm,
-  ProForm,
-  ProFormSelect,
-  ProFormText,
+
   ProFormDigit,
 } from '@ant-design/pro-components';
-import { ItemPanel } from 'gg-editor';
 
-const { Option } = Select;
-
-const formItemLayout = {
-  wrapperCol: {
-    xs: {
-      span: 24,
-    },
-    sm: {
-      span: 16,
-    },
-  },
-};
 
 const CardInfo = ({ total, price }) => (
   <div className={styles.cardInfo}>

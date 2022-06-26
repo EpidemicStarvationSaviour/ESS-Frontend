@@ -51,7 +51,7 @@ const GlobalHeaderRight = () => {
       <span
         className={styles.action}
         onClick={() => {
-          window.open('https://github.com/cxz66666/zju_bs2021_frontend');
+          window.open('https://github.com/EpidemicStarvationSaviour');
         }}
       >
         <QuestionCircleOutlined />
