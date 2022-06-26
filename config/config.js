@@ -234,6 +234,29 @@ export default defineConfig({
       access: 'canSeeMygroup',
     },
     {
+      name: '骑手接单',
+      icon: 'smile',
+      path: '/rider',
+      access: 'canLogistics',
+      routes: [
+        {
+          name: '骑手主页',
+          icon: 'smile',
+          path: '/rider/list',
+          component: './rider/Home',
+          access: 'canLogistics',
+        },
+        // {
+        //   name: '订单详情',
+        //   icon: 'smile',
+        //   path: '/group/detail/:id',
+        //   hideInMenu: true,
+        //   component: './group/DetailPage',
+        //   access: 'canLogistics',
+        // },
+      ],
+    },
+    {
       component: '404',
     },
   ],

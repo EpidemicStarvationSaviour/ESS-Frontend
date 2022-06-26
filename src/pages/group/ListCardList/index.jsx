@@ -61,7 +61,6 @@ const ListCardList = (props) => {
   };
 
   const list = listData?.data || [];
-  const participateNum = listData?.count || 0;
   const Info = ({ title, value, bordered }) => (
     <div className={styles.headerInfo}>
       <span>{title}</span>
@@ -73,7 +72,7 @@ const ListCardList = (props) => {
     <Card bordered={false}>
       <Row>
         <Col sm={8} xs={24}>
-          <Info title="我参与的团购数" value={participateNum} bordered />
+          <Info title="我参与的团购数" value={listData?.count || 0} bordered />
         </Col>
       </Row>
     </Card>
