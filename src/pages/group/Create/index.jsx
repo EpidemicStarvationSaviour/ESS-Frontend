@@ -346,14 +346,13 @@ const Create = () => {
                 </Col>
                 <Col
                   xl={{
-                    span: 7,
-                    offset: 1,
+                    span: 15,
                   }}
                   lg={{
-                    span: 10,
+                    span: 15,
                   }}
                   md={{
-                    span: 24,
+                    span: 15,
                   }}
                   sm={24}
                 >
