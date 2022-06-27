@@ -262,6 +262,9 @@ const ListCardList = (props) => {
             rowKey="id"
             name="table"
             headerTitle="购物车"
+            scroll={{
+              x: 700,
+            }}
             columns={[
               {
                 title: '名称',
@@ -276,9 +279,9 @@ const ListCardList = (props) => {
                 readonly: true,
                 renderFormItem: (text, row) => {
                   console.info(text, row);
-                  return <Image src={text.entry.avatar} alt={text.entry.name} height={80} />;
+                  return <Image src={text.entry.avatar} alt={text.entry.name} width={"10vh"} style={{ objectFit: 'contain' }} />;
                 },
-                render: (text, record, index) => <Image src={text} alt={record.name} height={80} />,
+                render: (text, record, index) => <Image src={text} alt={record.name} width={"10vh"} style={{ objectFit: 'contain' }} />,
               },
               {
                 title: '单价',

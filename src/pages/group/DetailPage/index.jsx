@@ -443,7 +443,7 @@ const DetailPage = (props) => {
                         column={{ xs: 1, sm: 2, md: 5 }}
                       >
                         <Descriptions.Item>
-                          <Image src={r.avatar} height={80} alt={r.name} />
+                          <Image src={r.avatar} width={"10vh"} style={{ objectFit: 'contain' }} alt={r.name} />
                         </Descriptions.Item>
                         <Descriptions.Item label="单价">{r.price}</Descriptions.Item>
                         <Descriptions.Item label="总量">{r.total_number}</Descriptions.Item>
@@ -513,6 +513,9 @@ const DetailPage = (props) => {
           bordered={false}
         >
           <Table
+            scroll={{
+              x: 700,
+            }}
             columns={[
               {
                 title: '种类',
@@ -527,7 +530,6 @@ const DetailPage = (props) => {
                   return {
                     key: e.type_id,
                     type_name: e.type_name,
-                    type_avatar: <Image src={e.type_avatar} height={80} alt={e.type_name} />,
                     subcommodity: e.children,
                   };
                 })
@@ -547,7 +549,7 @@ const DetailPage = (props) => {
                       dataIndex: 'avatar',
                       key: 'avatar',
                       render: (text, record, index) => (
-                        <Image src={text} alt={record.name} height={80} />
+                        <Image src={text} alt={record.name} width={"10vh"} style={{ objectFit: 'contain' }} />
                       ),
                     },
                     {

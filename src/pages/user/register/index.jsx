@@ -162,7 +162,6 @@ const Register = () => {
         message: '注册失败',
       });
       return;
-      console.log(error, params);
     },
   });
 
