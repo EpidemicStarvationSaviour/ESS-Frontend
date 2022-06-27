@@ -122,7 +122,7 @@ const Home = () => {
   const content = (
     <div className={styles.pageHeaderContent}>
       <p>
-        这里是您参与/管理的团，如果您的身份已经是团长，那么可以在该页面可以选择任务并查看详情；若您是买方，也可以在此处修改对商品的需求量。
+        这里是您负责配送的团购，如果您已有订单，那么在本页面可以通过电话联系团长，也可以通过点击订单名进入详情页汇报进度；否则，单击下方按钮以开始接单！
       </p>
       {loading ? null : DetailNum}
     </div>
@@ -282,11 +282,11 @@ const Home = () => {
                   </div>
                   <div>
                     <p>预计时间</p>
-                    <p>{next?.expected_time}</p>
+                    <p>{next?.expected_time}分钟</p>
                   </div>
                   <div>
                     <p>报酬</p>
-                    <p>{next?.reward}</p>
+                    <p>{next?.reward}￥</p>
                   </div>
                 </div>
                 <Paragraph
