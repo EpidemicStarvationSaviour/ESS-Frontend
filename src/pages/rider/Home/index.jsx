@@ -133,11 +133,11 @@ const Home = () => {
       return <Tag color="red">未知类型</Tag>;
     }
     switch (type) {
-      case 1:
-        return <Tag color="green">待配送</Tag>;
       case 2:
-        return <Tag color="blue">配送中</Tag>;
+        return <Tag color="green">待配送</Tag>;
       case 3:
+        return <Tag color="blue">配送中</Tag>;
+      case 4:
         return <Tag color="purple">已经完成</Tag>;
       default:
         return <Tag color="blue">未使用</Tag>;
